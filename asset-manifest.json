@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/skoobydont/reach_for_algo/static/css/main.a617e044.chunk.css",
+    "main.js": "/skoobydont/reach_for_algo/static/js/main.e79adf4a.chunk.js",
+    "main.js.map": "/skoobydont/reach_for_algo/static/js/main.e79adf4a.chunk.js.map",
+    "runtime-main.js": "/skoobydont/reach_for_algo/static/js/runtime-main.bfbd1b94.js",
+    "runtime-main.js.map": "/skoobydont/reach_for_algo/static/js/runtime-main.bfbd1b94.js.map",
+    "static/js/2.cafacd94.chunk.js": "/skoobydont/reach_for_algo/static/js/2.cafacd94.chunk.js",
+    "static/js/2.cafacd94.chunk.js.map": "/skoobydont/reach_for_algo/static/js/2.cafacd94.chunk.js.map",
+    "static/js/3.1b9c8649.chunk.js": "/skoobydont/reach_for_algo/static/js/3.1b9c8649.chunk.js",
+    "static/js/3.1b9c8649.chunk.js.map": "/skoobydont/reach_for_algo/static/js/3.1b9c8649.chunk.js.map",
+    "index.html": "/skoobydont/reach_for_algo/index.html",
+    "static/css/main.a617e044.chunk.css.map": "/skoobydont/reach_for_algo/static/css/main.a617e044.chunk.css.map",
+    "static/js/2.cafacd94.chunk.js.LICENSE.txt": "/skoobydont/reach_for_algo/static/js/2.cafacd94.chunk.js.LICENSE.txt",
+    "static/media/logo.6ce24c58.svg": "/skoobydont/reach_for_algo/static/media/logo.6ce24c58.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.bfbd1b94.js",
+    "static/js/2.cafacd94.chunk.js",
+    "static/css/main.a617e044.chunk.css",
+    "static/js/main.e79adf4a.chunk.js"
+  ]
+}
