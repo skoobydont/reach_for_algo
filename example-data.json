@@ -1,0 +1,58 @@
+{
+  "data": [
+    {
+      "id": "",
+      "images": [],
+      "status": "sold out | available | etc",
+      "propertyInfo": {
+        "address": {
+          "street": "",
+          "street2": "",
+          "city": "",
+          "state": "",
+          "zip": ""
+        },
+        "bedrooms": 0,
+        "bath": 0,
+        "sqft": 0,
+        "yearBuilt": 1776,
+        "vacant": "currently | searching | filled",
+        "description": "",
+        "cityDescription": "",
+        "propertyType": "studio | 1 fam | 2 fam | 3+ fam",
+        "neighborhood": "",
+        "lotSize": 0
+      },
+      "tokenInfo": {
+        "totalAvailable": 0,
+        "totalSold": 0,
+        "cashDividend": 0,
+        "projectedIRR": 0
+      },
+      "investmentInfo": {
+        "totalInvestment": 0,
+        "totalTokens": 0,
+        "tokenPrice": 0
+      },
+      "financialInfo": {
+        "annualGrossRents": 0,
+        "propertyTaxes": 0,
+        "homeOwnersInsurance": 0,
+        "propertyManagement": 0,
+        "llcAdminFilingFees": 0,
+        "annualCashFlow": 0,
+        "monthlyCashFlow": 0,
+        "projectedIRR": 0,
+        "appreciation": 0,
+        "cashOnCashReturn": 0,
+        "capRate": 0,
+        "monthlyCost": 0,
+        "netMonthlyRent": 0,
+        "netAnnualRent": 0,
+        "totalInvestment": 0,
+        "expectedYield": 0
+      },
+      "projectTimeline": []
+    }
+  ]
+}

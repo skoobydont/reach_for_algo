@@ -16,7 +16,9 @@ const useStyles = makeStyles((theme) => ({
 const LandingPage = () => {
   const classes = useStyles();
   return (
-    <div className={classes.root}>LandingPage</div>
+    <div className={classes.root}>
+      Real Estate For The Digital Age
+    </div>
   );
 }
 export default LandingPage;
