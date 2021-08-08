@@ -35,25 +35,25 @@ const Nav = () => {
   const handleAccountRedirect = () => history.replace('/account');
   return (
     <AppBar position="static" className={classes.bar}>
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="home"
-          onClick={handleHomeRedirect}
-        >
-          <HomeIcon />
-        </IconButton>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="menu-appbar"
-          className={classes.account}
-          aria-haspopup="true"
-          onClick={handleMenu}
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <Menu
+      <IconButton
+        edge="start"
+        color="inherit"
+        aria-label="home"
+        onClick={handleHomeRedirect}
+      >
+        <HomeIcon />
+      </IconButton>
+      <IconButton
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        className={classes.account}
+        aria-haspopup="true"
+        onClick={handleMenu}
+        color="inherit"
+      >
+        <AccountCircle />
+      </IconButton>
+      <Menu
           id="menu-appbar"
           anchorEl={anchorEl}
           anchorOrigin={{

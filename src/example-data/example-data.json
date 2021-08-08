@@ -1,38 +1,303 @@
 {
   "data": [
     {
-      "id": "",
+      "id": "1",
       "images": [],
-      "status": "sold out | available | etc",
+      "status": "sold out",
       "propertyInfo": {
         "address": {
-          "street": "",
+          "street": "2339 Greenvale Rd",
           "street2": "",
-          "city": "",
-          "state": "",
-          "zip": ""
+          "city": "Cleveland",
+          "state": "OH",
+          "zip": "44122"
         },
-        "bedrooms": 0,
-        "bath": 0,
-        "sqft": 0,
-        "yearBuilt": 1776,
-        "vacant": "currently | searching | filled",
-        "description": "",
-        "cityDescription": "",
-        "propertyType": "studio | 1 fam | 2 fam | 3+ fam",
+        "bedrooms": 2,
+        "bath": 1,
+        "sqft": 754,
+        "yearBuilt": 1950,
+        "vacant": "currently | searching",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla commodo lorem nibh, eu porttitor lorem suscipit et. Praesent imperdiet, elit semper vehicula auctor, tellus dolor ultricies erat, eu porta orci nisl quis urna. Ut commodo quam consectetur, tincidunt felis id, imperdiet nibh. Etiam porta tellus in ultrices tempor. Praesent egestas eu arcu quis rhoncus. Donec aliquet sapien vitae sollicitudin cursus. Pellentesque pretium libero id tortor iaculis, at venenatis turpis elementum. Vivamus vel risus sagittis, commodo metus id, malesuada mauris. Nunc consectetur ut neque non malesuada. Integer vitae pharetra nibh.",
+        "cityDescription": "Nam ullamcorper libero quis ipsum faucibus tempus. Nulla facilisi. Cras ac fermentum felis. Ut sit amet nulla nibh. Curabitur commodo ligula sed justo ultricies blandit. Quisque ultrices est sed felis tincidunt efficitur. Donec fermentum interdum vehicula. ",
+        "propertyType": "1 fam",
         "neighborhood": "",
         "lotSize": 0
       },
       "tokenInfo": {
-        "totalAvailable": 0,
-        "totalSold": 0,
+        "totalAvailable": 1950,
+        "totalSold": 1950,
+        "cashDividend": 6.4,
+        "projectedIRR": 17.4
+      },
+      "investmentInfo": {
+        "totalInvestment": 98500,
+        "totalTokens": 1950,
+        "tokenPrice": 50
+      },
+      "financialInfo": {
+        "annualGrossRents": 10000,
+        "propertyTaxes": 1500,
+        "homeOwnersInsurance": 550,
+        "propertyManagement": 1000,
+        "llcAdminFilingFees": 500,
+        "annualCashFlow": 5285,
+        "monthlyCashFlow": 550,
+        "projectedIRR": 17.4,
+        "appreciation": 11.0,
+        "cashOnCashReturn": 6.4,
+        "capRate": 6.4,
+        "monthlyCost": 0,
+        "netMonthlyRent": 0,
+        "netAnnualRent": 0,
+        "totalInvestment": 0,
+        "expectedYield": 0
+      },
+      "projectTimeline": [
+        {
+          "date": "2021-04-29",
+          "title": "Property Put Under Contract",
+          "description": "SPV Paperwork completed & LLC tokenized"
+        },
+        {
+          "date": "2021-07-19",
+          "title": "Token Offerings",
+          "description": "Tokens available for purchase"
+        },
+        {
+          "date": "2021-08-20",
+          "title": "Tokenization Complete",
+          "description": "Token cap achieved"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "images": [],
+      "status": "sold out",
+      "propertyInfo": {
+        "address": {
+          "street": "917 Pawnee Ave",
+          "street2": "apt 2",
+          "city": "Memphis",
+          "state": "TN",
+          "zip": "38110"
+        },
+        "bedrooms": 3,
+        "bath": 2,
+        "sqft": 890,
+        "yearBuilt": 1962,
+        "vacant": "occupied",
+        "description": "Phasellus ut metus eget nibh vestibulum sodales condimentum id arcu. Morbi fermentum sapien erat, non gravida sapien commodo et. Donec commodo ligula in porttitor auctor. Aenean elementum, nunc at fermentum fermentum, arcu nunc aliquet metus, ac sodales leo mi quis felis. Curabitur rhoncus aliquet dolor vitae ultricies. Maecenas auctor, quam et luctus lacinia, neque purus cursus orci, id molestie sem urna eu quam. Donec ac eros non risus pulvinar posuere. Ut semper elit at tellus mattis lobortis. Phasellus dictum magna nec mauris scelerisque, eu vulputate nibh eleifend. Aliquam fermentum nunc nec nisl tempor condimentum. Nulla tincidunt odio vestibulum, facilisis ante eget, laoreet sem.",
+        "cityDescription": "Cras finibus purus non nibh iaculis finibus. Proin vestibulum hendrerit mattis. Cras pellentesque porta tellus, at iaculis lectus condimentum in. Quisque vestibulum consectetur nisi, ut interdum ex. Duis fermentum pulvinar dolor, in tincidunt lorem efficitur vitae. Donec ultricies tempor leo vel facilisis. Quisque felis turpis, pellentesque eu nulla sit amet, molestie consectetur tellus. Fusce ac viverra ante, vitae cursus turpis. Maecenas ullamcorper suscipit est non tincidunt. Donec ut ultricies quam. Aenean maximus ornare consectetur. In dictum est turpis, eu ultricies ex ultrices et. Aenean in nisi turpis. Integer aliquam tortor tortor, vel vestibulum tellus pretium nec. Sed a enim sit amet risus cursus ornare. Nulla aliquam lectus eu urna eleifend, fringilla molestie lacus dictum. ",
+        "propertyType": "2 fam",
+        "neighborhood": "",
+        "lotSize": 0
+      },
+      "tokenInfo": {
+        "totalAvailable": 2250,
+        "totalSold": 2250,
+        "cashDividend": 6.9,
+        "projectedIRR": 18.9
+      },
+      "investmentInfo": {
+        "totalInvestment": 109500,
+        "totalTokens": 2250,
+        "tokenPrice": 55
+      },
+      "financialInfo": {
+        "annualGrossRents": 9456,
+        "propertyTaxes": 750,
+        "homeOwnersInsurance": 700,
+        "propertyManagement": 780,
+        "llcAdminFilingFees": 756,
+        "annualCashFlow": 7900,
+        "monthlyCashFlow": 650,
+        "projectedIRR": 18.9,
+        "appreciation": 12.0,
+        "cashOnCashReturn": 6.9,
+        "capRate": 6.9,
+        "monthlyCost": 0,
+        "netMonthlyRent": 0,
+        "netAnnualRent": 0,
+        "totalInvestment": 0,
+        "expectedYield": 0
+      },
+      "projectTimeline": [
+        {
+          "date": "2020-04-29",
+          "title": "Property Put Under Contract",
+          "description": "SPV Paperwork completed & LLC tokenized"
+        },
+        {
+          "date": "2021-08-19",
+          "title": "Token Offerings",
+          "description": "Tokens available for purchase"
+        },
+        {
+          "date": "2021-10-20",
+          "title": "Tokenization Complete",
+          "description": "Token cap achieved"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "images": [],
+      "status": "rennovation",
+      "propertyInfo": {
+        "address": {
+          "street": "15208 Bringard Dr",
+          "street2": "suite 500",
+          "city": "Columbus",
+          "state": "OH",
+          "zip": "42250"
+        },
+        "bedrooms": 2,
+        "bath": 3,
+        "sqft": 1500,
+        "yearBuilt": 1976,
+        "vacant": "occupied",
+        "description": "Vivamus aliquam, magna vitae vulputate tristique, nibh ante egestas nisi, vitae feugiat massa orci sit amet mauris. Cras in tellus sed est ultricies mattis. Vestibulum semper, diam quis viverra fermentum, est purus volutpat leo, et commodo nibh velit at nunc. Proin id varius erat. Duis congue turpis eu semper facilisis. Curabitur efficitur posuere eros, id dictum lectus volutpat in. Suspendisse sagittis mauris sit amet iaculis maximus. Sed maximus turpis turpis, a dignissim sem bibendum sit amet. ",
+        "cityDescription": "Cras aliquam nisi nunc, nec pellentesque turpis iaculis non. Morbi tincidunt, urna non imperdiet pulvinar, ligula risus porttitor justo, sed ornare turpis nisi sed ipsum. Curabitur sodales a nisi vel rutrum. Mauris ultricies luctus libero sed sagittis. Curabitur egestas massa id purus interdum posuere. Aenean volutpat lacinia vehicula. Mauris vel neque tortor. Fusce erat nulla, elementum ut vulputate placerat, tincidunt et libero. Curabitur quis elit tristique, aliquam nisl at, finibus ipsum. Aenean sagittis urna ut nisl ultricies, sit amet aliquam tellus commodo. Quisque lacinia eros ultrices, vulputate urna id, finibus lectus. ",
+        "propertyType": "studio",
+        "neighborhood": "",
+        "lotSize": 1350
+      },
+      "tokenInfo": {
+        "totalAvailable": 2200,
+        "totalSold": 750,
+        "cashDividend": 5.6,
+        "projectedIRR": 12.6
+      },
+      "investmentInfo": {
+        "totalInvestment": 350000,
+        "totalTokens": 2200,
+        "tokenPrice": 50
+      },
+      "financialInfo": {
+        "annualGrossRents": 13520,
+        "propertyTaxes": 460,
+        "homeOwnersInsurance": 320,
+        "propertyManagement": 850,
+        "llcAdminFilingFees": 250,
+        "annualCashFlow": 12550,
+        "monthlyCashFlow": 1250,
+        "projectedIRR": 12.6,
+        "appreciation": 10,
+        "cashOnCashReturn": 0,
+        "capRate": 0,
+        "monthlyCost": 550,
+        "netMonthlyRent": 750,
+        "netAnnualRent": 1750,
+        "totalInvestment": 350000,
+        "expectedYield": 10.2
+      },
+      "projectTimeline": [
+        {
+          "date": "2020-02-29",
+          "title": "Property Put Under Contract",
+          "description": "SPV Paperwork completed & LLC tokenized"
+        },
+        {
+          "date": "2020-07-01",
+          "title": "Token Offerings",
+          "description": "Tokens available for purchase"
+        },
+        {
+          "date": "2021-01-02",
+          "title": "Tokenization Complete",
+          "description": "Token cap achieved"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "images": [],
+      "status": "sold out",
+      "propertyInfo": {
+        "address": {
+          "street": "16851 Ilene St",
+          "street2": "",
+          "city": "Detroit",
+          "state": "MI",
+          "zip": "48250"
+        },
+        "bedrooms": 3,
+        "bath": 3,
+        "sqft": 1323,
+        "yearBuilt": 1930,
+        "vacant": "occupied",
+        "description": "Nulla lectus felis, sodales eu urna eget, imperdiet pellentesque justo. Vivamus egestas nisl nec leo scelerisque, vitae hendrerit lectus suscipit. Sed ullamcorper magna ante, at lobortis eros dapibus sit amet. Curabitur quis congue ex. Ut a ultricies urna, luctus aliquam nisl. Pellentesque pretium nisl vel libero luctus, viverra viverra ipsum pellentesque. Cras mollis mi ut elit vestibulum, vitae feugiat ante varius. ",
+        "cityDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean lacinia tincidunt velit ac imperdiet. Nam vel congue nisi, non eleifend enim. Fusce et leo urna. Maecenas lectus elit, pharetra vel enim eget, porttitor convallis mi. Praesent faucibus vehicula libero, non vehicula purus aliquet quis. Maecenas a posuere justo, nec aliquam neque. Aenean massa tellus, ornare sit amet posuere sed, pharetra in dui. ",
+        "propertyType": "3+ fam",
+        "neighborhood": "",
+        "lotSize": 850
+      },
+      "tokenInfo": {
+        "totalAvailable": 3200,
+        "totalSold": 3200,
+        "cashDividend": 7.2,
+        "projectedIRR": 19.2
+      },
+      "investmentInfo": {
+        "totalInvestment": 185250,
+        "totalTokens": 3200,
+        "tokenPrice": 62
+      },
+      "financialInfo": {
+        "annualGrossRents": 15500,
+        "propertyTaxes": 2000,
+        "homeOwnersInsurance": 850,
+        "propertyManagement": 1530,
+        "llcAdminFilingFees": 520,
+        "annualCashFlow": 10740,
+        "monthlyCashFlow": 750,
+        "projectedIRR": 19.2,
+        "appreciation": 15.0,
+        "cashOnCashReturn": 7.2,
+        "capRate": 7.2,
+        "monthlyCost": 0,
+        "netMonthlyRent": 0,
+        "netAnnualRent": 0,
+        "totalInvestment": 0,
+        "expectedYield": 0
+      },
+      "projectTimeline": []
+    },
+    {
+      "id": "5",
+      "images": [],
+      "status": "available",
+      "propertyInfo": {
+        "address": {
+          "street": "1927-1945 S Drake Ave",
+          "street2": "",
+          "city": "Chicago",
+          "state": "IL",
+          "zip": "60696"
+        },
+        "bedrooms": 1,
+        "bath": 1,
+        "sqft": 850,
+        "yearBuilt": 1899,
+        "vacant": "searching",
+        "description": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed vehicula ac dolor vitae egestas. Aliquam elit justo, lobortis vel sagittis nec, rutrum vel dui. Pellentesque dictum auctor dapibus. Vivamus sed ex elit. Curabitur mollis vel turpis ac iaculis. In faucibus magna a ipsum mattis, sit amet scelerisque ante aliquet. Vivamus faucibus erat eget mollis elementum. Proin metus nibh, molestie gravida turpis in, convallis posuere velit. Morbi commodo neque mi, ac feugiat nulla egestas a. In vel sagittis neque. ",
+        "cityDescription": "Pellentesque nec scelerisque odio. Nullam nulla odio, gravida sit amet euismod non, euismod ut nibh. Nulla ornare urna vel lectus rutrum, sed mattis nisi commodo. Aliquam dictum ex eu dolor dapibus, vitae fermentum tortor molestie. Quisque sit amet nibh viverra, ullamcorper dui et, hendrerit nisi. Duis quis ipsum sed purus interdum aliquet imperdiet sed ligula. Integer sit amet varius justo. ",
+        "propertyType": "studio",
+        "neighborhood": "",
+        "lotSize": 6270,
+        "totalUnits": 25
+      },
+      "tokenInfo": {
+        "totalAvailable": 1200,
+        "totalSold": 2500,
         "cashDividend": 0,
         "projectedIRR": 0
       },
       "investmentInfo": {
-        "totalInvestment": 0,
-        "totalTokens": 0,
-        "tokenPrice": 0
+        "totalInvestment": 799200,
+        "totalTokens": 2500,
+        "tokenPrice": 53
       },
       "financialInfo": {
         "annualGrossRents": 0,
@@ -47,10 +312,10 @@
         "cashOnCashReturn": 0,
         "capRate": 0,
         "monthlyCost": 0,
-        "netMonthlyRent": 0,
-        "netAnnualRent": 0,
-        "totalInvestment": 0,
-        "expectedYield": 0
+        "netMonthlyRent": 11125,
+        "netAnnualRent": 89850,
+        "totalInvestment": 799200,
+        "expectedYield": 10.3
       },
       "projectTimeline": []
     }
