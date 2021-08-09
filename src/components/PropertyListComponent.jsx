@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 // MUI
 import Typography from '@material-ui/core/Typography';
@@ -9,6 +9,12 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+// Icons
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 // Custom
 import displayAddress from '../utilities/displayAddress';
 
@@ -16,6 +22,14 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     margin: theme.spacing(1),
+  },
+  listHeader: {
+    flexDirection: 'row',
+    display: 'flex',    
+  },
+  collapse: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
@@ -25,39 +39,59 @@ const PropertyCard = (props) => {
     classes,
   } = props;
   const history = useHistory();
+  const [expandMore, setExpandMore] = useState(false);
+  const handlePropertyRedirect = () => history.push(`/property/${property?.id}`,
+    { activeProperty: property },
+  );
   return (
     <Card className={classes.root} key={property?.id}>
-      <CardActionArea
-        onClick={() => history.push(
-          `/property/${property?.id}`,
-          { activePropery: property },
-        )}
-      >
-        {/* <CardMedia
-          component="img"
-          alt="Contemplative Reptile"
-          height="140"
-          image="/static/images/cards/contemplative-reptile.jpg"
-          title="TODO: repalce with actual p[ics"
-        /> */}
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
+      <div className={classes.listHeader}>
+        <IconButton
+          onClick={() => setExpandMore(!expandMore)}
+          aria-expanded={expandMore}
+          aria-label="show more"
+        >
+          {expandMore ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </IconButton>
+        <CardActionArea
+          onClick={expandMore
+            ? () => handlePropertyRedirect()
+            : () => setExpandMore(!expandMore)
+          }
+        >
+          <Typography variant="h6" component="h2">
             {displayAddress(property?.propertyInfo?.address)}
           </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button
-          size="small"
-          color="primary"
-          onClick={() => history.push(
-            `/property/${property?.id}`,
-            { activePropery: property },
-          )}
+        </CardActionArea>
+        <IconButton
+          style={expandMore
+            ? { visibility: 'visible' }
+            : { visibility: 'hidden' }
+          }
+          onClick={() => handlePropertyRedirect()}
         >
-          Learn More
-        </Button>
-      </CardActions>
+          <ArrowForwardIcon />
+        </IconButton>
+      </div>
+      <Collapse in={expandMore} timeout="auto" unmountOnExit className={classes.collapse}>
+        <CardContent>
+            <Typography>
+              Stats
+            </Typography>
+        </CardContent>
+        <CardActions>
+          <Button
+            size="small"
+            color="primary"
+            onClick={() => history.push(
+              `/property/${property?.id}`,
+              { activeProperty: property },
+            )}
+          >
+            Learn More
+          </Button>
+        </CardActions>
+      </Collapse>
     </Card>
   )
 }
