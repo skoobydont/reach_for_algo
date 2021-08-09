@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 // Custom
 import SearchComponent from '../components/SearchComponent';
 import exampleData from '../example-data/example-data.json';
+import PropertyListComponent from '../components/PropertyListComponent';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +35,9 @@ const LandingPage = () => {
         searchValue={search}
         handleValueChange={setSearch}
       />
+      {data?.length > 0 && (
+        <PropertyListComponent data={data} setData={setData} />
+      )}
     </div>
   );
 }
