@@ -5,7 +5,7 @@
       "images": [
         {
           "id": 1,
-          "path": "http://localhost:3000/src/example-data/pics/example01.jpeg"
+          "path": "./src/example-data/pics/example01.jpeg"
         }
       ],
       "status": "sold out",
@@ -79,7 +79,7 @@
       "id": "2","images": [
         {
           "id": 2,
-          "path": "http://localhost:3000/src/example-data/pics/example02.jpeg"
+          "path": "./src/example-data/pics/example02.jpeg"
         }
       ],
       "status": "sold out",
@@ -154,7 +154,7 @@
       "images": [
         {
           "id": 3,
-          "path": "http://localhost:3000/src/example-data/pics/example03.jpeg"
+          "path": "./src/example-data/pics/example03.jpeg"
         }
       ],
       "status": "rennovation",
