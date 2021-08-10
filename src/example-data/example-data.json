@@ -2,7 +2,12 @@
   "data": [
     {
       "id": "1",
-      "images": [],
+      "images": [
+        {
+          "id": 1,
+          "path": "http://localhost:3000/src/example-data/pics/example01.jpeg"
+        }
+      ],
       "status": "sold out",
       "propertyInfo": {
         "address": {
@@ -71,8 +76,12 @@
       ]
     },
     {
-      "id": "2",
-      "images": [],
+      "id": "2","images": [
+        {
+          "id": 2,
+          "path": "http://localhost:3000/src/example-data/pics/example02.jpeg"
+        }
+      ],
       "status": "sold out",
       "propertyInfo": {
         "address": {
@@ -142,7 +151,12 @@
     },
     {
       "id": "3",
-      "images": [],
+      "images": [
+        {
+          "id": 3,
+          "path": "http://localhost:3000/src/example-data/pics/example03.jpeg"
+        }
+      ],
       "status": "rennovation",
       "propertyInfo": {
         "address": {

@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
 // Icons
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 // Utils
@@ -19,11 +20,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  top: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
 }));
 
 const ProductPage = () => {
   const history = useHistory();
   const classes = useStyles();
+  const propInfo = history?.location?.state?.activeProperty;
   console.log('hi9sotry', history);
   return (
     <div className={classes.root}>
@@ -36,7 +43,17 @@ const ProductPage = () => {
         </Typography>
       </div>
       <div className={classes.body}>
-        Some Stats &amp; Deets
+        <div className={classes.top}>
+          <div className={classes.imgs}>
+            put imgs here
+          </div>
+          <div className={classes.deets}>
+            Some Stats &amp; Deets
+          </div>
+        </div>
+        <div>
+          the rest of the info
+        </div>
       </div>
     </div>
   );
