@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 // Custom
 import SearchComponent from '../components/SearchComponent';
-import exampleData from '../example-data/example-data.json';
+import exampleData from '../example-data.json';
 import PropertyListComponent from '../components/PropertyListComponent';
 
 const useStyles = makeStyles((theme) => ({

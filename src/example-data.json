@@ -5,7 +5,7 @@
       "images": [
         {
           "id": 1,
-          "path": "./src/example-data/pics/example01.jpeg"
+          "path": "pics/example01.jpeg"
         }
       ],
       "status": "sold out",
@@ -76,10 +76,11 @@
       ]
     },
     {
-      "id": "2","images": [
+      "id": "2",
+      "images": [
         {
           "id": 2,
-          "path": "./src/example-data/pics/example02.jpeg"
+          "path": "pics/example02.jpeg"
         }
       ],
       "status": "sold out",
@@ -154,7 +155,7 @@
       "images": [
         {
           "id": 3,
-          "path": "./src/example-data/pics/example03.jpeg"
+          "path": "pics/example03.jpeg"
         }
       ],
       "status": "rennovation",

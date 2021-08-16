@@ -11,10 +11,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 // Icons
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 // Utils
 import displayAddress from '../utilities/displayAddress';
+
+import someImg from '../pics/example01.jpeg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,13 +55,22 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(1),
       marginTop: theme.spacing(4),
     }
-  }
+  },
+  topMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
 }));
 
 const ProductPage = () => {
   const history = useHistory();
   const classes = useStyles();
   const propInfo = history?.location?.state?.activeProperty;
+  /**
+   * Mobile? maxWidth: 415px
+   * @type {boolean} - is the current viewpoint mobile?
+   */
+  const mobile = useMediaQuery('(max-width:415px)');
   console.log('prop info', propInfo);
   return (
     <div className={classes.root}>
@@ -71,13 +83,16 @@ const ProductPage = () => {
         </Typography>
       </div>
       <div className={classes.body}>
-        <div className={classes.top}>
+        <div className={
+          mobile ? classes.mobileTop : classes.top
+        }>
           <div className={classes.imgs}>
             {/* TODO: img file paths */}
             {propInfo?.images ? (
               <>
+                <div>{process.env.PUBLIC_URL + propInfo?.images?.[0]?.path}</div>
                 <img
-                  src={`${propInfo?.images?.[0]?.path}`}
+                  src={`${process.env.PUBLIC_URL}/${propInfo?.images?.[0]?.path}`}
                   alt={`${displayAddress(
                     propInfo?.propertyInfo.address
                   )}-pics`}
@@ -96,11 +111,11 @@ const ProductPage = () => {
                     <Chip
                       color={
                         propInfo?.propertyInfo.vacant === 'occupied'
-                        ? 'primary' : 'secondary'
+                          ? 'primary' : 'secondary'
                       }
                       label={
                         propInfo?.propertyInfo.vacant === 'occupied'
-                        ? 'Occupied' : 'Vacant'}
+                          ? 'Occupied' : 'Vacant'}
                       className={classes.chip}
                     />
                   </TableCell>
@@ -152,11 +167,12 @@ const ProductPage = () => {
           <Table size="small">
             <TableBody>
               <TableRow>
-                <TableCell>
+                <TableCell noWrap>
                   Token Info
                 </TableCell>
                 <TableCell>
                   <Chip
+                    className={classes.chip}
                     label={propInfo?.status}
                     color={propInfo?.status !== 'sold out'
                       ? 'primary' : 'secondary'}
@@ -168,8 +184,8 @@ const ProductPage = () => {
               </TableRow>
               <TableRow>
                 <TableCell>
-                  Tokens Sold
-                </TableCell> 
+                  # Sold
+                </TableCell>
                 <TableCell>
                   {propInfo.tokenInfo.totalSold}
                 </TableCell>
@@ -182,7 +198,7 @@ const ProductPage = () => {
               </TableRow>
               <TableRow>
                 <TableCell>
-                  # available
+                  # Available
                 </TableCell>
                 <TableCell>
                   {propInfo.tokenInfo.totalAvailable
@@ -192,8 +208,8 @@ const ProductPage = () => {
                   $ / Token
                 </TableCell>
                 <TableCell>
-                  {`$ ${+(propInfo.investmentInfo.totalInvestment
-                  / propInfo.investmentInfo.totalTokens).toFixed(2)}`}
+                  {`$${+(propInfo.investmentInfo.totalInvestment
+                    / propInfo.investmentInfo.totalTokens).toFixed(2)}`}
                 </TableCell>
               </TableRow>
             </TableBody>
