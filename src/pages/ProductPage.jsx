@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-// MUI
+// MUI Core
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -12,6 +12,11 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Paper from '@material-ui/core/Paper';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+// Lab
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
@@ -63,13 +68,20 @@ const useStyles = makeStyles((theme) => ({
 const ProductPage = () => {
   const history = useHistory();
   const classes = useStyles();
+  const [expandTL, setExpandTL] = useState('');
   const propInfo = history?.location?.state?.activeProperty;
   /**
    * Mobile? maxWidth: 415px
    * @type {boolean} - is the current viewpoint mobile?
    */
   const mobile = useMediaQuery('(max-width:415px)');
-  console.log('prop info', propInfo);
+  /**
+   * Handle Expanding Timeline Accordions
+   * @param {int} panel panel index
+   * @fires setExpandTL to new panel or close
+   */
+  const handleExpandTL = (panel) => (e, newE) => setExpandTL(newE ? panel : false);
+  // console.log('prop info', propInfo);
   return (
     <div className={classes.root}>
       <div className={classes.header}>
@@ -211,8 +223,41 @@ const ProductPage = () => {
           </Table>
         </div>
         <div>
+          <h4 className={classes.subheader}>Project Timeline</h4>
           <Timeline>
-            
+            {Array.isArray(propInfo?.projectTimeline) ? (
+              propInfo.projectTimeline?.sort((a, b) => 
+                new Date(a.date) < new Date(b.date)
+              )?.map((tl, i) => (
+                <TimelineItem>
+                  <TimelineOppositeContent>
+                    {tl?.date}
+                  </TimelineOppositeContent>
+                  <TimelineSeparator>
+                    <TimelineDot
+                      color={i === 0
+                        ? 'secondary' : 'primary'}
+                    />
+                    {i !== propInfo.projectTimeline.length - 1
+                      ? <TimelineConnector /> : null}
+                  </TimelineSeparator>
+                  <TimelineContent>
+                    <Accordion
+                      square
+                      expanded={expandTL === i}
+                      onChange={handleExpandTL(i)}
+                    >
+                      <AccordionSummary>
+                        <b>{tl?.title}</b>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {tl?.description}
+                      </AccordionDetails>
+                    </Accordion>
+                  </TimelineContent>
+                </TimelineItem>
+              ))
+            ) : null}
           </Timeline>
         </div>
         <div>
