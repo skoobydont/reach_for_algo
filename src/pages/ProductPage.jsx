@@ -12,12 +12,17 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Timeline from '@material-ui/lab/Timeline';
+import TimelineItem from '@material-ui/lab/TimelineItem';
+import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
+import TimelineConnector from '@material-ui/lab/TimelineConnector';
+import TimelineContent from '@material-ui/lab/TimelineContent';
+import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
+import TimelineDot from '@material-ui/lab/TimelineDot';
 // Icons
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 // Utils
 import displayAddress from '../utilities/displayAddress';
-
-import someImg from '../pics/example01.jpeg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,18 +48,11 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     alignItems: 'baseline',
   },
-  chip: {
-    '& span': {
-      paddingTop: '4px',
-    },
-  },
-  numbers: {
-    '& h4': {
-      width: '100%',
-      backgroundColor: theme.palette.primary.main,
-      padding: theme.spacing(1),
-      marginTop: theme.spacing(4),
-    }
+  subheader: {
+    width: '100%',
+    backgroundColor: theme.palette.primary.main,
+    padding: theme.spacing(1),
+    marginTop: theme.spacing(4),
   },
   topMobile: {
     display: 'flex',
@@ -115,7 +113,6 @@ const ProductPage = () => {
                       label={
                         propInfo?.propertyInfo.vacant === 'occupied'
                           ? 'Occupied' : 'Vacant'}
-                      className={classes.chip}
                     />
                   </TableCell>
                 </TableRow>
@@ -162,23 +159,22 @@ const ProductPage = () => {
           </div>
         </div>
         <div className={classes.numbers}>
-          <h4>The Numbers</h4>
+          <h4 className={classes.subheader}>Quick Numbers</h4>
           <Table size="small">
             <TableBody>
               <TableRow>
                 <TableCell noWrap>
-                  Token Info
+                  <b>Token Info</b>
                 </TableCell>
                 <TableCell>
                   <Chip
-                    className={classes.chip}
                     label={propInfo?.status}
                     color={propInfo?.status !== 'sold out'
                       ? 'primary' : 'secondary'}
                   />
                 </TableCell>
                 <TableCell colSpan={2}>
-                  Investment Info
+                  <b>Investment Info</b>
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -212,6 +208,24 @@ const ProductPage = () => {
                 </TableCell>
               </TableRow>
             </TableBody>
+          </Table>
+        </div>
+        <div>
+          <Timeline>
+            
+          </Timeline>
+        </div>
+        <div>
+          <h4 className={classes.subheader}>More Numbers</h4>
+          <Table size="small">
+            {propInfo?.financialInfo ? (
+              Object.keys(propInfo.financialInfo).sort().map(f => (
+                <TableRow>
+                  <TableCell>{f}</TableCell>
+                  <TableCell>{propInfo.financialInfo[f]}</TableCell>
+                </TableRow>
+              ))
+            ) : null}
           </Table>
         </div>
       </div>
