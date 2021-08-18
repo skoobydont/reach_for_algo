@@ -87,12 +87,11 @@ const ProductPage = () => {
           mobile ? classes.mobileTop : classes.top
         }>
           <div className={classes.imgs}>
-            {/* TODO: img file paths */}
+            {/* TODO: img file paths: meh good enough for now */}
             {propInfo?.images ? (
               <>
-                <div>{process.env.PUBLIC_URL + propInfo?.images?.[0]?.path}</div>
                 <img
-                  src={`${process.env.PUBLIC_URL}/${propInfo?.images?.[0]?.path}`}
+                  src={`${process.env.REACT_APP_URL_BASE}/${propInfo?.images?.[0]?.path}`}
                   alt={`${displayAddress(
                     propInfo?.propertyInfo.address
                   )}-pics`}
