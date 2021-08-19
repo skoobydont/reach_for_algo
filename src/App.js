@@ -1,9 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
 
 import './App.css';
 import MainTheme from './components/Theme';
 import Nav from './components/NavComponent';
+import Footer from './components/FooterComponent';
 import LandingPage from './pages/LandingPage';
 import ProductPage from './pages/ProductPage';
 import ProfilePage from './pages/ProfilePage';
@@ -19,10 +24,11 @@ const App = () => {
             <Route path="/profile" exact component={ProfilePage} />
             <Route path="/account" exact component={AccountPage} />
             <Route path="/property/:id" exact component={ProductPage} />
-            <Route path="/" exact component={LandingPage} />
+            <Route path="/reach_for_algo" exact component={LandingPage} />
           </Switch>      
         </div>
       </Router>
+      <Footer />
     </MainTheme>
   );
 }

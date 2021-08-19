@@ -30,7 +30,7 @@ const Nav = () => {
   const handleMenu = (e) => setAnchorEl(e.currentTarget);
   const handleClose = () => setAnchorEl(null);
   // redirect handlers
-  const handleHomeRedirect = () => history.replace('/');
+  const handleHomeRedirect = () => history.replace('/reach_for_algo');
   const handleProfileRedirect = () => history.replace('/profile');
   const handleAccountRedirect = () => history.replace('/account');
   return (
