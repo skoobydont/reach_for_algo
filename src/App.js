@@ -27,8 +27,8 @@ const App = () => {
             <Route path="/reach_for_algo" exact component={LandingPage} />
           </Switch>      
         </div>
+        <Footer />
       </Router>
-      <Footer />
     </MainTheme>
   );
 }

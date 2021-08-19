@@ -14,16 +14,22 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'start',
   },
-}))
+  icon: {
+    maxWidth: theme.spacing(5),
+    marginBottom: theme.spacing(1),
+    marginLeft: theme.spacing(-1),
+  },
+}));
 
 const Footer = () => {
   const classes = useStyles();
   const history = useHistory();
-  const handleHomeRedirect = () => history.replace('/reach_for_algo');
+  const handleHomeRedirect = () => history?.replace('/reach_for_algo');
   return (
     <BottomNavigation className={classes.root}>
       <BottomNavigationAction
         icon={<HomeIcon />}
+        className={classes.icon}
         onClick={handleHomeRedirect}
       />
     </BottomNavigation>
