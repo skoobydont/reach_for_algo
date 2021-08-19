@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    paddingLeft: '12px',
     paddingTop: '8px',
     justifyContent: 'center',
     '& .MuiInputBase-root': {

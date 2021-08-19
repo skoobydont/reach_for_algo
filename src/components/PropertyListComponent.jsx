@@ -46,17 +46,18 @@ const PropertyCard = (props) => {
   return (
     <Card className={classes.root} key={property?.id}>
       <div className={classes.listHeader}>
-        <IconButton
+        {/* <IconButton
           onClick={() => setExpandMore(!expandMore)}
           aria-expanded={expandMore}
           aria-label="show more"
         >
           {expandMore ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </IconButton>
+        </IconButton> */}
         <CardActionArea
-          onClick={expandMore
-            ? () => handlePropertyRedirect()
-            : () => setExpandMore(!expandMore)
+          onClick={
+            // expandMore ?
+            () => handlePropertyRedirect()
+            // : () => setExpandMore(!expandMore)
           }
         >
           <Typography variant="h6" component="h2">

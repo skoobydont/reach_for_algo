@@ -28,16 +28,22 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 // Utils
 import displayAddress from '../utilities/displayAddress';
+import { capitalize } from '../utilities/formatUtil';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
   header: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    '& button.MuiIconButton-root': {
+      paddingLeft: theme.spacing(0),
+    },
   },
   top: {
     display: 'flex',
@@ -58,6 +64,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     padding: theme.spacing(1),
     marginTop: theme.spacing(4),
+    borderRadius: theme.spacing(1),
+    boxShadow: '0px 2px 6px #FFF',
   },
   topMobile: {
     display: 'flex',
@@ -230,10 +238,10 @@ const ProductPage = () => {
                 new Date(a.date) < new Date(b.date)
               )?.map((tl, i) => (
                 <TimelineItem>
-                  <TimelineOppositeContent>
+                  <TimelineOppositeContent style={{ marginTop: '12px' }}>
                     {tl?.date}
                   </TimelineOppositeContent>
-                  <TimelineSeparator>
+                  <TimelineSeparator style={{ marginTop: '12px' }}>
                     <TimelineDot
                       color={i === 0
                         ? 'secondary' : 'primary'}
@@ -264,10 +272,24 @@ const ProductPage = () => {
           <h4 className={classes.subheader}>More Numbers</h4>
           <Table size="small">
             {propInfo?.financialInfo ? (
-              Object.keys(propInfo.financialInfo).sort().map(f => (
+              Object.keys(propInfo.financialInfo).map((f, i) => (
                 <TableRow>
-                  <TableCell>{f}</TableCell>
-                  <TableCell>{propInfo.financialInfo[f]}</TableCell>
+                  {i % 2 === 0 ? (
+                    <>
+                      <TableCell>
+                        {capitalize(Object.keys(propInfo.financialInfo)[i + 1])}
+                      </TableCell>
+                      <TableCell>
+                        {propInfo.financialInfo[Object.keys(propInfo.financialInfo)[i + 1]]}
+                      </TableCell>
+                      <TableCell>
+                        {capitalize(f)}
+                      </TableCell>
+                      <TableCell>
+                        {propInfo.financialInfo[f]}
+                      </TableCell>
+                    </>
+                  ) : null}
                 </TableRow>
               ))
             ) : null}
