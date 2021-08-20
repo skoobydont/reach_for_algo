@@ -22,10 +22,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     margin: theme.spacing(1),
+    padding: theme.spacing(1),
   },
   listHeader: {
     flexDirection: 'row',
-    display: 'flex',    
+    display: 'flex',
   },
   collapse: {
     display: 'flex',
@@ -60,11 +61,11 @@ const PropertyCard = (props) => {
             // : () => setExpandMore(!expandMore)
           }
         >
-          <Typography variant="h6" component="h2">
+          <Typography>
             {displayAddress(property?.propertyInfo?.address)}
           </Typography>
         </CardActionArea>
-        <IconButton
+        {/* <IconButton
           style={expandMore
             ? { visibility: 'visible' }
             : { visibility: 'hidden' }
@@ -72,7 +73,7 @@ const PropertyCard = (props) => {
           onClick={() => handlePropertyRedirect()}
         >
           <ArrowForwardIcon />
-        </IconButton>
+        </IconButton> */}
       </div>
       <Collapse in={expandMore} timeout="auto" unmountOnExit className={classes.collapse}>
         <CardContent>

@@ -55,31 +55,31 @@ const Nav = () => {
         <AccountCircle />
       </IconButton>
       <Menu
-          id="menu-appbar"
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={open}
-          onClose={handleClose}
+        id="menu-appbar"
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem
+          onClick={handleProfileRedirect}
         >
-          <MenuItem
-            onClick={handleProfileRedirect}
-          >
-            Profile
-          </MenuItem>
-          <MenuItem
-            onClick={handleAccountRedirect}
-          >
-            My account
-          </MenuItem>
-        </Menu>
+          Profile
+        </MenuItem>
+        <MenuItem
+          onClick={handleAccountRedirect}
+        >
+          My account
+        </MenuItem>
+      </Menu>
     </AppBar>
   )
 };
