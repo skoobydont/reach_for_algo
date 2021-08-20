@@ -53,6 +53,7 @@ const ProfilePage = () => {
     await getBalance();
     setRefresh(false);
   }
+  console.log('account', account.current);
   return (
     <div>
       {refresh ? <div>Loading</div> : (
