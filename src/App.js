@@ -19,14 +19,23 @@ import ProductPage from './pages/ProductPage';
 import ProfilePage from './pages/ProfilePage';
 import AccountPage from './pages/AccountPage';
 /** Misc Globals */
-const testAppId = 13793863;
+const testAppId = 13793869;
 /**
  * Well this seemed to have gotten updated a bit.
  *  with custom rendering propd pages for user mngmt
  * @returns {Component}
  */
 const App = () => {
-  
+  // Begin SDK Setup
+  const algodServer = `${process.env.REACT_APP_ALGOD_SERVER_URL}`
+  const indexerServer = `${process.env.REACT_APP_INDEXER_URL}`
+  const token = { 'X-API-Key': `${process.env.REACT_APP_PURESTAKE_API_KEY}` }
+  const port = '';
+  // TODO: incorporate creating asa & indexing assets
+  // ie https://purestake.github.io/algosigner-dapp-example/
+  const algodClient = new algosdk.Algodv2(token, algodServer, port);
+  const indexerClient = new algosdk.Indexer(token, indexerServer, port);
+
   const account = useRef();
   const balance = useRef();
   const fundAmount = useRef();
@@ -96,7 +105,7 @@ const App = () => {
     const accts = await AlgoSigner.accounts({
       ledger: 'TestNet'
     });
-    return JSON.stringify(accts, null, 2);
+    return accts;
   }, []);
   const getParams = useCallback(async () => {
     try {
@@ -123,16 +132,42 @@ const App = () => {
     }
   }, []);
   // End AlgoSigner Helper Methods
-  
+  /**
+   * Get Account Info From Wallet Address
+   * @async
+   */
+  const getAccountByAddress = async () => {
+    const trxByAccount = [];
+    if (algoAccount.current?.length > 0) {
+      // if user has multiple accounts, loop each
+      algoAccount.current?.forEach((act) => {
+        console.log('account', act);
+        // push promise to result array
+        trxByAccount.push(algodClient.accountInformation(act.address).do());
+      });
+      // resolve above promises
+      const allTrxByAccounts = await Promise.all(trxByAccount);
+      // now maybe display some accoutn info?
+      console.log('all trx res', allTrxByAccounts);
+    }
+  }
   const handleAlgoSignerInstalled = async () => {
     setRefresh(true);
     algoSignerInstalled.current = await getAlgoSignerInstalled();
+    console.log('algo? res: ', algoSignerInstalled.current);
     setRefresh(false);
   }
   
   const handleAlgoAccount = async () => {
     setRefresh(true);
-    algoAccount.current = await getAccounts();
+    if (await getAlgoSignerInstalled()) {
+      algoAccount.current = await getAccounts();
+      if (algoAccount.current !== null) {
+        await getAccountByAddress();
+      }
+    } else {
+      alert('AlogSigner unavailable');
+    }
     setRefresh(false);
   }
 
@@ -148,16 +183,6 @@ const App = () => {
     setRefresh(false);
   }
   // End Button Handlers
-  // Begin SDK Setup
-  const algodServer = `${process.env.REACT_APP_ALGOD_SERVER_URL}`
-  const indexerServer = `${process.env.REACT_APP_INDEXER_URL}`
-  const token = { 'X-API-Key': `${process.env.REACT_APP_PURESTAKE_API_KEY}` }
-  const port = '';
-  // TODO: incorporate creating asa & indexing assets
-  // ie https://purestake.github.io/algosigner-dapp-example/
-  const algodClient = new algosdk.Algodv2(token, algodServer, port);
-  const indexerClient = new algosdk.Indexer(token, indexerServer, port);
-
   // BE CAREFUL ABOUT RE-RENDER CALL QTY
   // MAY END UP WITH 429: TOO MANY REQUESTS
   
