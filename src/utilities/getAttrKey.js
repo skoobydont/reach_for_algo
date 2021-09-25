@@ -24,6 +24,8 @@ export default (attr, encrypt = true) => {
       return process.env.REACT_APP_ZIP_ENCRYPT_KEY; 
     case 'attribute':
       return process.env.REACT_APP_ATTRIBUTE_ENCRYPT_KEY;
+    case 'object':
+      return process.env.REACT_APP_OBJECT_ENCRYPT_KEY;
     default:
       return null;
     }
