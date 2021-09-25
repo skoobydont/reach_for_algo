@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 // MUI
 import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
 // Custom
 import KYCForm from '../components/KYCForm';
-import { encryptObj } from '../utilities/encryptAttr';
+import encryptThis, { encryptObj } from '../utilities/encryptAttr';
+import getAttrKey from '../utilities/getAttrKey';
 
 const ProfilePage = (props) => {
   const {
@@ -27,6 +29,7 @@ const ProfilePage = (props) => {
     state: '',
     zip: '',
   });
+  const [isEncrypting, setIsEncrypting] = useState(false);
   // state handlers
   const handleSSN = (e) => setSSN(e.target.value);
   const handleFName = (e) => setFName(e.target.value);
@@ -34,12 +37,14 @@ const ProfilePage = (props) => {
   const handleEmail = (e) => setEmail(e.target.value);
   const handlePhone = (e) => setPhone(e.target.value);
   const handleAddress = (e, attr) => setAddress({ ...address, [attr]: e.target.value });
+  const handleIsEncrypting = (val) => setIsEncrypting(val);
   /**
    * Handle Form Submit
    * @param {Object} e event obj
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    handleIsEncrypting(true);
     console.log('the state', {
       ssn,
       fName,
@@ -58,14 +63,32 @@ const ProfilePage = (props) => {
     };
     // encrypt address obj
     const eAddr = encryptObj(theStateRn.address);
-    const encryptThis = {
+    const eAddrStringified = JSON.stringify(eAddr);
+    const eAddrES = encryptThis(eAddrStringified, getAttrKey('object'));
+    const encryptPayload = {
       ...theStateRn,
-      address: eAddr,
+      address: eAddrES,
     };
-    console.log('encrypt address res with state', encryptThis);
-    const eState = encryptObj(encryptThis);
-    console.log('all toghet now', eState);  
-    // for each attr, encrypt
+    // console.log('encrypt address res with state', encryptPayload);
+    const eState = encryptObj(encryptPayload);
+    // console.log('all toghet now', eState);
+    const eSString = JSON.stringify(eState);
+    // console.log('the string to encrypt ', eSString);
+    const encryptedStringifiedObj = encryptThis(eSString, getAttrKey('object'));
+    console.log('all done', encryptedStringifiedObj);
+    console.log('okeeeeeee now lets try to decode as well');
+    const decryptStr = encryptThis(encryptedStringifiedObj, getAttrKey('object'), false);
+    const decryptObj = JSON.parse(decryptStr);
+    const dRes = encryptObj(decryptObj, false);
+    console.log('the decrypted result', dRes);
+    console.log('decrypting the address attr');
+    const dAddr = encryptThis(dRes?.address, getAttrKey('object'), false);
+    // console.log('d addr ? ', dAddr);
+    // console.log('json parse', JSON.parse(dAddr));
+    const dAddrParsed = JSON.parse(dAddr);
+    const dAddrObj = encryptObj(dAddrParsed, false);
+    console.log('the decrypted addr', dAddrObj);
+    handleIsEncrypting(false);
   };
   /*
     ssn: int,
@@ -102,21 +125,23 @@ const ProfilePage = (props) => {
             </>
           )}
           <Typography>Encrypt some text</Typography>
-          <KYCForm
-            ssn={ssn}
-            handleSSN={handleSSN}
-            fName={fName}
-            handleFName={handleFName}
-            lName={lName}
-            handleLName={handleLName}
-            email={email}
-            handleEmail={handleEmail}
-            phone={phone}
-            handlePhone={handlePhone}
-            address={address}
-            handleAddress={handleAddress}
-            handleSubmit={handleSubmit}
-          />
+          {isEncrypting ? <LinearProgress /> : (
+            <KYCForm
+              ssn={ssn}
+              handleSSN={handleSSN}
+              fName={fName}
+              handleFName={handleFName}
+              lName={lName}
+              handleLName={handleLName}
+              email={email}
+              handleEmail={handleEmail}
+              phone={phone}
+              handlePhone={handlePhone}
+              address={address}
+              handleAddress={handleAddress}
+              handleSubmit={handleSubmit}
+            />
+          )}
         </>
       )}
     </div>
