@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Cryptr from 'cryptr';
 // MUI
 import Typography from '@material-ui/core/Typography';
 // Custom
 import KYCForm from '../components/KYCForm';
+import { encryptObj } from '../utilities/encryptAttr';
 
 const ProfilePage = (props) => {
   const {
@@ -27,14 +27,18 @@ const ProfilePage = (props) => {
     state: '',
     zip: '',
   });
-  // handlers
+  // state handlers
   const handleSSN = (e) => setSSN(e.target.value);
   const handleFName = (e) => setFName(e.target.value);
   const handleLName = (e) => setLName(e.target.value);
   const handleEmail = (e) => setEmail(e.target.value);
   const handlePhone = (e) => setPhone(e.target.value);
   const handleAddress = (e, attr) => setAddress({ ...address, [attr]: e.target.value });
-  const handleSubmit = (e) => {
+  /**
+   * Handle Form Submit
+   * @param {Object} e event obj
+   */
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('the state', {
       ssn,
@@ -44,6 +48,23 @@ const ProfilePage = (props) => {
       phone,
       address,
     });
+    const theStateRn = {
+      ssn,
+      fName,
+      lName,
+      email,
+      phone,
+      address,
+    };
+    // encrypt address obj
+    const eAddr = encryptObj(theStateRn.address);
+    const encryptThis = {
+      ...theStateRn,
+      address: eAddr,
+    };
+    console.log('encrypt address res with state', encryptThis);
+    const eState = encryptObj(encryptThis);
+    console.log('all toghet now', eState);  
     // for each attr, encrypt
   };
   /*
