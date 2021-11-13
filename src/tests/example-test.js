@@ -1,5 +1,10 @@
 // selenium
-const { By, Key, Builder } = require('selenium-webdriver');
+const {
+  By,
+  Key,
+  Builder,
+  until,
+} = require('selenium-webdriver');
 // chrome driver
 require('chromedriver');
 // firefox driver
@@ -20,7 +25,10 @@ const SEARCHSTRING = 'Automation testing with Selenium';
   await driver.get('https://google.com');
   // find search input & send query + press enter (return)
   await driver
-    .sleep()
+    .wait(
+      until.elementsLocated(By.name('q')),
+      1000
+    )
     .then(async () => {
       await driver
         .findElement(By.name('q'))
@@ -31,7 +39,10 @@ const SEARCHSTRING = 'Automation testing with Selenium';
     });
   // verify page title
   const title = await driver
-    .sleep(2000)
+    .wait(
+      until.titleIs(`${SEARCHSTRING} - Google Search`),
+      1000,
+    )
     .then(async () => {
       try {
         return await driver.getTitle();
