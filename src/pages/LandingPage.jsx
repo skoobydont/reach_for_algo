@@ -43,13 +43,98 @@ const LandingPage = () => {
   const [camera, setCamera] = useState(null);
   const [renderer, setRenderer] = useState(null);
   const [shape, setShape] = useState(null);
-  // helper
+  const [maxX, setMaxX] = useState(null);
+  const [maxY, setMaxY] = useState(null);
+  /**
+   * Ensure scene, camera, renderer & shape not null
+   * @constant
+   * @type {Boolean}
+   */
   const allReady = (
     scene !== null
     && camera !== null
     && renderer !== null
     && shape !== null
   );
+  /**
+   * Generate Shape
+   * @param {String} shp the desired shape
+   * @param {string} color of generated shape
+   * @param {Boolean} wire wireframe option
+   * @returns {Object} new Mesh instance with given options
+   */
+  const generateShape = (shp, color, wire = false) => {
+    // setup geometry stuff
+    let geometry = null;
+    switch (shp) {
+      case 'box':
+        geometry = new BoxGeometry();
+        break;
+      case 'pyramid':
+        geometry = new CylinderGeometry(
+          0,
+          1,
+          3,
+          4,
+        );
+        break;
+      default:
+        geometry = null;
+    }
+    const material = new MeshBasicMaterial({
+      color,
+      wireframe: wire,
+    });
+    return new Mesh(geometry, material);
+  };
+  /**
+   * Rotate Shape Accross Y Axis
+   * @constant
+   * @fires requestAnimationFrame
+   * @fires renderer.render() with updated scene & camera
+   */
+  const rotateY = () => {
+    requestAnimationFrame(rotateY);
+    // only want to spin accross y axis
+    // setMaxY(shape.rotation.y += 0.0025);
+    if (shape.rotation.y <= 5) {
+      shape.rotation.y += 0.0025;
+    }
+    // render updated scene / camera
+    renderer.render(scene, camera);
+  };
+  /**
+   * Rotate Shape Accross X Axis
+   * @constant
+   * @fires requestAnimationFrame
+   * @fires renderer.render() with updated scene & camera
+   */
+   const rotateX = () => {
+    // after this request animation frame
+    // is where custom x rotation logic should reside
+    requestAnimationFrame(rotateX);
+    // only want to spin accross x axis under 10
+    // seems 6.5 is a full rotation
+    const fullRotation = 6.45;
+    if (shape.rotation.x <= (1 * fullRotation)) {
+      shape.rotation.x += 0.025;
+    }
+    // render updated scene / camera
+    renderer.render(scene, camera);
+  };
+  /**
+   * Rotate Shape (may need reworked to handle different scenarios)
+   * @constant
+   * @fires rotateY
+   * @fires rotateX
+   * @description fires off rotate Y then rotate X
+   *  (each run in totallity before the next)
+   */
+  const rotateShape = () => {
+    // call custom rotating logic here
+    rotateY();
+    rotateX();
+  }
   // setup state
   useEffect(() => {
     if (scene === null) {
@@ -74,31 +159,6 @@ const LandingPage = () => {
       document.getElementById('myCanvas').appendChild(renderer.domElement);
     }
   }, [scene, camera, renderer]);
-  
-  const generateShape = (shp, color, wire = false) => {
-    // setup geometry stuff
-    let geometry = null;
-    switch (shp) {
-      case 'box':
-        geometry = new BoxGeometry();
-        break;
-      case 'pyramid':
-        geometry = new CylinderGeometry(
-          0,
-          1,
-          3,
-          4,
-        );
-        break;
-      default:
-        geometry = null;
-    }
-    const material = new MeshBasicMaterial({
-      color,
-      wireframe: wire,
-    });
-    return new Mesh(geometry, material);
-  }
   // add to scene
   useEffect(() => {
     if (scene !== null
@@ -114,22 +174,12 @@ const LandingPage = () => {
         scene.add(theShape);
         camera.position.z = 5;
       }
-  }, [scene, camera, renderer, shape, theme]);
-  // scene.add(shape);
-
-
-  const animate = () => {
-    requestAnimationFrame(animate);
-    // shape.rotation.x += 0.01;
-    shape.rotation.y += 0.0025;
-
-    renderer.render(scene, camera);
-  };
+  }, [scene, camera, renderer, shape, theme]); 
 
   return (
     <div id="myCanvas" className={classes.canvas}>
       {allReady
-        ? animate()
+        ? rotateShape()
         : null}
     </div>
   );
