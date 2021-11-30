@@ -24,11 +24,6 @@ const ProfilePage = (props) => {
   return (
     <div>
       <>
-        <div>
-          {algoSignerInstalled.current
-            ? 'AlgoSigner detected'
-            : 'Unable to detect AlgoSigner'}
-        </div>
         {/* <Button
           onClick={handleAlgoSignerInstalled}
           variant="contained"

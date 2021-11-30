@@ -46,7 +46,7 @@ const App = () => {
    * @async
    * @fires setRefresh
    */
-   const fundWallet = async () => {
+  const fundWallet = async () => {
     setRefresh(true);
     const faucet = await reach.getFaucet();
     await reach.transfer(
