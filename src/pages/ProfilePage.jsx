@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 
 const ProfilePage = (props) => {
   const {
@@ -8,8 +9,26 @@ const ProfilePage = (props) => {
     fundWallet,
     refresh,
   } = props;
+  const [posts, setPosts] = useState(null);
+  const getWPosts = async () => {
+    // TODO: handle ReadableStream returned from fetch
+    // https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream
+    const thePosts = await fetch(`${process.env.REACT_APP_WP_BASE_URL}/posts`)
+      .then((res) => {
+        console.log('then res', res);
+      });
+    return thePosts;
+  };
 
-  
+  useEffect(() => {
+    if (posts === null) {
+      const thePosts = getWPosts();
+      if (thePosts) {
+        setPosts(thePosts);
+      }
+    }
+  }, [posts]);
+  console.log('the posts in state', posts);
   // console.log('pfol page props', props);
   return (
     <div>
