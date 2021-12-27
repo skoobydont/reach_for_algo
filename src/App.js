@@ -151,6 +151,20 @@ const App = () => {
       console.log('all trx res', allTrxByAccounts);
     }
   }
+  
+  const getAssetInformationByID = async (id) => {
+    const assetInfo = await indexerClient.lookupAssetByID(id).do();
+    console.log('some asset info', assetInfo);
+    return assetInfo;  
+  }
+
+  const getAccountInformationByID = async (id) => {
+    const accountInfo = await indexerClient.lookupAccountByID(id).do();
+    console.log('the id: ', id);
+    console.log('the account info', accountInfo);
+    return accountInfo;
+  }
+
   const handleAlgoSignerInstalled = async () => {
     setRefresh(true);
     algoSignerInstalled.current = await getAlgoSignerInstalled();
@@ -228,6 +242,8 @@ const App = () => {
                   handleAlgoParams={handleAlgoParams}
                   algoGlobal={algoGlobal}
                   handleAppGlobalState={handleAppGlobalState}
+                  handleGetAccountInfo={getAccountInformationByID}
+                  handleGetAssetInfo={getAssetInformationByID}
                 />
               )}
             />
