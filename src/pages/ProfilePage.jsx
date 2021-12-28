@@ -4,23 +4,12 @@ import Button from '@material-ui/core/Button';
 
 const ProfilePage = (props) => {
   const {
-    account,
-    balance,
-    fundAmount,
-    connectWallet,
-    fundWallet,
-    refresh,
-    algoSignerInstalled,
-    handleAlgoSignerInstalled,
-    algoAccount,
-    handleAlgoAccount,
-    algoParams,
-    handleAlgoParams,
-    algoGlobal,
-    handleAppGlobalState,
+    algosdk,
     handleGetAccountInfo,
     handleGetAssetInfo,
+    handleGetTransactionParams,
   } = props;
+  // https://dappradar.com/blog/algorand-dapp-development-2-standard-asset-management
 
   const [assets, setAssets] = useState(null);
   
@@ -43,6 +32,14 @@ const ProfilePage = (props) => {
     }
   }
 
+  const getTransactionParams = async () => {
+    const tParams = await handleGetTransactionParams();
+    console.log('some transaction params', tParams);
+    return tParams;
+  }
+
+
+
   return (
     <div>
       <>
@@ -57,6 +54,11 @@ const ProfilePage = (props) => {
           variant="contained"
         >
           Get Assets
+        </Button>
+        <Button
+          onClick={() => getTransactionParams()}
+        >
+          Transaction Params
         </Button>
         {Array.isArray(assets) && assets?.length > 0
           ? (
