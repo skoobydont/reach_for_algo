@@ -35,20 +35,38 @@ const App = () => {
   const indexerClient = new algosdk.Indexer(token, indexerServer, port);
 
   const account = useRef();
-  
+  /**
+   * Set Account & Update Ref
+   * @param {Object} info the account info object
+   */
+  const setAccount = (info) => {
+    // console.log('account.current ', account.current);
+    account.current = info;
+  }
+  /**
+   * Get Asset Information by ID
+   * @param {string | number} id assetId
+   * @returns {Object} assetInformation
+   */
   const getAssetInformationByID = async (id) => {
     const assetInfo = await indexerClient.lookupAssetByID(id).do();
-    console.log('some asset info', assetInfo);
+    // console.log('some asset info', assetInfo);
     return assetInfo;  
   }
-
+  /**
+   * Get Account Information By Wallet Address
+   * @param {string} id wallet address
+   * @returns {Object} accountInformation
+   */
   const getAccountInformationByID = async (id) => {
     const accountInfo = await indexerClient.lookupAccountByID(id).do();
-    console.log('the id: ', id);
-    console.log('the account info', accountInfo);
     return accountInfo;
   }
-
+  /**
+   * Get Transaction Parameters
+   * @async
+   * @returns {Promise} algoClient.getTransactionParams().do()
+   */
   const getTransactionParams = async () => {
     try {
       return await algodClient.getTransactionParams().do();
@@ -56,26 +74,7 @@ const App = () => {
       console.error(e);
     }
   }
-  // End Button Handlers
-  // BE CAREFUL ABOUT RE-RENDER CALL QTY
-  // MAY END UP WITH 429: TOO MANY REQUESTS
   
-  // algodClient.status().do()
-  //   .then(d => { 
-  //     console.log('health check ', d);
-  //   })
-  //   .catch(e => { 
-  //     console.error(e); 
-  //   });
-  // indexerClient.makeHealthCheck().do()
-  // .then(d => { 
-  //   console.log('health check indexer ', d);
-  // })
-  // .catch(e => { 
-  //   console.error(e); 
-  // });
-  // End SDK Setup
-
   return (
     <MainTheme>
       <Router>
@@ -88,6 +87,8 @@ const App = () => {
               render={(props) => (
                 <ProfilePage
                   {...props}
+                  account={account}
+                  handleSetAccount={setAccount}
                   handleGetAccountInfo={getAccountInformationByID}
                   handleGetAssetInfo={getAssetInformationByID}
                   handleGetTransactionParams={getTransactionParams}
@@ -122,6 +123,10 @@ const App = () => {
                 <LandingPage
                   {...props}
                   user={account}
+                  handleGetAccountInfo={getAccountInformationByID}
+                  handleGetAssetInfo={getAssetInformationByID}
+                  handleGetTransactionParams={getTransactionParams}
+                  algosdk={algosdk}
                 />
               )}
             />
