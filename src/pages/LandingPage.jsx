@@ -26,6 +26,7 @@ const LandingPage = (props) => {
     handleGetAssetInfo,
     handleGetTransactionParams,
     algosdk,
+    algodClient,
   } = props;
 
   const assets = useRef();
@@ -75,7 +76,11 @@ const LandingPage = (props) => {
       {Array.isArray(assets.current) && assets.current?.length
         ? (
           <div>
-            <AssetListComponent assets={assets.current} />
+            <AssetListComponent
+              assets={assets.current}
+              algodClient={algodClient}
+              user={user}
+            />
           </div>
         ) : null}
     </div>

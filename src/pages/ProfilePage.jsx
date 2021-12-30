@@ -47,11 +47,11 @@ const ProfilePage = (props) => {
     return walletInfo;
   }
 
-  const getTransactionParams = async () => {
-    const tParams = await handleGetTransactionParams();
-    console.log('some transaction params', tParams);
-    return tParams;
-  }
+  // const getTransactionParams = async () => {
+  //   const tParams = await handleGetTransactionParams();
+  //   console.log('some transaction params', tParams);
+  //   return tParams;
+  // }
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
@@ -60,7 +60,14 @@ const ProfilePage = (props) => {
     handleSetAccount(walletInfo);
   }
 
+  const handleSignOut = () => {
+    setRefresh(true);
+    setAssets(null);
+    handleSetAccount(undefined);
+  };
+
   console.log('account', account);
+  console.log('the assets', assets);
 
   useEffect(() => {
     if (refresh) {
@@ -79,6 +86,7 @@ const ProfilePage = (props) => {
                 <Typography>
                   My Account: {account?.current?.account?.address}
                 </Typography>
+                <Button onClick={handleSignOut}>Sign Out</Button>
               </>
             ) : (
               <form onSubmit={handleSubmit}>

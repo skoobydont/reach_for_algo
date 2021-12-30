@@ -127,6 +127,7 @@ const App = () => {
                   handleGetAssetInfo={getAssetInformationByID}
                   handleGetTransactionParams={getTransactionParams}
                   algosdk={algosdk}
+                  algodClient={algodClient}
                 />
               )}
             />

@@ -36,8 +36,11 @@ const useStyles = makeStyles((theme) => ({
 const AssetListComponent = (props) => {
   const {
     assets,
+    algodClient,
+    user,
   } = props;
   const classes = useStyles();
+  console.log('the user', user);
   /**
    * Generate Initial Asset Collapse Object
    * @returns {Object} keys as asset index and value false (so all are default collapsed)
@@ -70,7 +73,30 @@ const AssetListComponent = (props) => {
     }
     return null;
   }
-  // TDOD: const handleOptInAsset()
+  /**
+   * Get Transaction Parameters
+   * @async
+   * @returns {Promise} algoClient.getTransactionParams().do()
+   */
+   const getTransactionParams = async () => {
+    try {
+      return await algodClient.getTransactionParams().do();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  const handleOptInAsset = async (assetId) => {
+    if (user.current === undefined) {
+      alert('Please sign in before opting in');
+      return null;
+    }
+    try {
+      const params = await getTransactionParams();
+      
+    } catch (e) {
+      console.error(e);
+    }
+  }
   // https://dappradar.com/blog/algorand-dapp-development-2-standard-asset-management
 
   return (
@@ -96,7 +122,9 @@ const AssetListComponent = (props) => {
                   ? <ExpandLessIcon />
                   : <ExpandMoreIcon />}
               </IconButton>
-              <Button>
+              <Button
+                disabled={user.current === undefined}
+              >
                 Opt-In
               </Button>
             </CardActions>
