@@ -5,6 +5,8 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Divider from '@material-ui/core/Divider';
+// Util
+import { commaFormat } from '../utilities/formatUtil';
 
 const ProfilePage = (props) => {
   const {
@@ -75,20 +77,42 @@ const ProfilePage = (props) => {
     }
   }, [refresh]);
 
+  useEffect(() => {
+    if (assets === null && account?.current?.account !== undefined) {
+      getWalletAssetsInfo(account?.current?.account?.address);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assets]);
+
   return (
     <div>
       <>
         {refresh
           ? <LinearProgress />
           : account.current !== undefined
-            ? (
-              <>
-                <Typography>
-                  My Account: {account?.current?.account?.address}
-                </Typography>
-                <Button onClick={handleSignOut}>Sign Out</Button>
-              </>
-            ) : (
+            ? Object?.keys(account.current)?.includes('account')
+              ? (
+                <>
+                  <Typography>
+                    My Account: {account?.current?.account?.address}
+                  </Typography>
+                  <Typography>
+                    {commaFormat(account.current.account?.amount)} microAlgos
+                  </Typography>
+                  <Button onClick={handleSignOut}>Sign Out</Button>
+                </>
+              )
+              : Object.keys(account.current)?.includes('message')
+                ? (
+                  <>
+                    <Typography>
+                      {account.current?.message}
+                    </Typography>
+                    <Button onClick={handleSignOut}>Sign Out</Button>
+                  </>
+                )
+                : null
+            : (
               <form onSubmit={handleSubmit}>
                 <Typography>Login With Wallet Address</Typography>
                 <TextField

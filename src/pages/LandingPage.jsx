@@ -80,6 +80,7 @@ const LandingPage = (props) => {
               assets={assets.current}
               algodClient={algodClient}
               user={user}
+              algosdk={algosdk}
             />
           </div>
         ) : null}
