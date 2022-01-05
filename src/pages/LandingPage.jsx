@@ -27,10 +27,18 @@ const LandingPage = (props) => {
     handleGetTransactionParams,
     algosdk,
     algodClient,
+    handleSetAccount,
   } = props;
 
   const assets = useRef();
   const [refresh, setRefresh] = useState(false);
+
+  const handleUpdatingAccountInfo = async (addr) => {
+    const updatedAccountInfo = await handleGetAccountInfo(addr);
+    console.log('the updated account info: ', updatedAccountInfo);
+    handleSetAccount(updatedAccountInfo);
+    return updatedAccountInfo;
+  };
 
   
   // get assets from main wallet address
@@ -81,6 +89,7 @@ const LandingPage = (props) => {
               algodClient={algodClient}
               user={user}
               algosdk={algosdk}
+              handleUpdateAccountInfo={handleUpdatingAccountInfo}
             />
           </div>
         ) : null}

@@ -128,6 +128,7 @@ const App = () => {
                   handleGetTransactionParams={getTransactionParams}
                   algosdk={algosdk}
                   algodClient={algodClient}
+                  handleSetAccount={setAccount}
                 />
               )}
             />
