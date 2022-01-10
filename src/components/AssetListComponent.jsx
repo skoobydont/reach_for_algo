@@ -1,5 +1,8 @@
 /* global AlgoSigner */
+// React
 import React, { useState } from 'react';
+// MyAglo
+import MyAlgoConnect from '@randlabs/myalgo-connect';
 // MUI
 import Card from '@material-ui/core/Card';
 import Paper from '@material-ui/core/Paper';
@@ -18,7 +21,10 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 // Utilities
-import { waitForConfirmation } from '../utilities/algo';
+import {
+  waitForConfirmation,
+  createOptInTrx,
+} from '../utilities/algo';
 // Classes
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,6 +64,7 @@ const AssetListComponent = (props) => {
     const {
       handleAssetByMnemonic,
       handleAssetByAlgoSigner,
+      handleAssetByMyAlgoConnect
     } = props;
     return (
       <CardContent>
@@ -76,6 +83,12 @@ const AssetListComponent = (props) => {
           variant="contained"
         >
           AlgoSigner
+        </Button>
+        <Button
+          onClick={() => handleAssetByMyAlgoConnect()}
+          variant="contained"
+        >
+          My Algo Conect
         </Button>
       </CardContent>
     );
@@ -297,67 +310,81 @@ const AssetListComponent = (props) => {
         address: 'AlgoSigner not detected',
       }]);
     }
-  }
-  const handleOptInAlgoSigner = async (asset) => {
-    /**
-     * 1. create transaction obj
-     * 2. sign transaction
-     * 3. send signed transaction via sdk
-     */
-    if (algoSignerWalletSelected === null) {
-      console.error('Please select valid wallet');
-      return null;
-    }
-    handleAssetRefresh(asset?.index, true);
-    try {
-      const params = await getTransactionParams();
-      // for opt-in, sender & recipient will be the same address
-      const sender = algoSignerWalletSelected;
-      const recipient = sender;
-      // We set revocationTarget to undefined as this is not a clawback operation
-      const revocationTarget = undefined;
-      // CloseReaminerTo is set to undefined as we are not closing out an asset
-      const closeRemainderTo = undefined;
-      const amount = 0;
-      // Construct transaction object
-      const optinTxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender,
-        recipient,
-        closeRemainderTo,
-        revocationTarget,
-        amount,
-        undefined,
-        asset?.index,
-        params,
-      );
-      // Encode to base64 text
-      const base64Tx = AlgoSigner.encoding.msgpackToBase64(optinTxn.toByte());
-      // sign with AlgoSigner
-      const signedTx = await AlgoSigner.signTxn([
-        {
-          txn: base64Tx,
-        },
-      ]);
-      console.log('the signed tx from algosigner: ', signedTx);
-      // Send signed transaction
-      const submittedSignedTrx = await AlgoSigner.send({
-        ledger: 'TestNet',
-        tx: signedTx[0]?.blob,
-      });
+  }  
 
-      console.log('submit trx w AlgoSigner | the res: ', submittedSignedTrx)
-      const confirmedTrx = await waitForConfirmation(algodClient, submittedSignedTrx.txId);
-      console.log('submit handler, confirmedTrxn: ', confirmedTrx);
-      const updatedAccountInfo = await handleUpdateAccountInfo(user.current.account.address);
-      console.log('the updated account info from trx submission', updatedAccountInfo);
-      return null;
+  const handleOptIn = async (signMethod, asset) => {
+    switch(signMethod) {
+      case 'AlgoSigner':
+        if (algoSignerWalletSelected === null) {
+          console.error('Please select valid wallet');
+          return null;
+        }
+        handleAssetRefresh(asset?.index, true);
+        try {
+          const params = await getTransactionParams();
+          const optInTrx = createOptInTrx(
+            algosdk,
+            algoSignerWalletSelected,
+            params,
+            asset,
+          );
+          // Encode to base64 text
+          const base64Tx = AlgoSigner.encoding.msgpackToBase64(optInTrx.toByte());
+          // sign with AlgoSigner
+          const signedTx = await AlgoSigner.signTxn([{ txn: base64Tx }]);
+          // Send signed transaction
+          // TODO: implement Ledger Handling
+          const submittedSignedTrx = await AlgoSigner.send({
+            ledger: 'TestNet',
+            tx: signedTx[0]?.blob,
+          });
+          // Wait for confirmation
+          await waitForConfirmation(algodClient, submittedSignedTrx.txId);
+          // Update Account Info
+          await handleUpdateAccountInfo(user.current.account.address);
 
-    } catch (e) {
-      console.error(e);
-    } finally {
-      handleAssetRefresh(asset?.index, false);
-      handleToggleOptInCollapse(asset?.index);
-      setAlgoSignerWalletSelected(null);
+          return null;
+        } catch (e) {
+          console.error(e);
+        } finally {
+          handleAssetRefresh(asset?.index, false);
+          return null;
+        }
+      case 'MyAlgoConnect':
+        handleAssetRefresh(asset?.index, true);
+        try {
+          // init myAlgoConnect
+          const myAlgoConnect = new MyAlgoConnect({ disableLedgerNano: false });
+          // Get Desired Account
+          const accounts = await myAlgoConnect.connect({
+            shouldSelectOneAccount: false,
+            openManager: false,
+          });
+          // Get Params
+          const params = await getTransactionParams();
+          // Create OptIn Transaction
+          const optInTrx = await createOptInTrx(
+            algosdk,
+            accounts[0]?.address,
+            params,
+            asset,
+          );
+          // Sign & Submit Transaction
+          const signedTrx = await myAlgoConnect.signTransaction(optInTrx.toByte());
+          // Wait for confirmation
+          await waitForConfirmation(algodClient, signedTrx.txID);
+          // Update Account Info
+          await handleUpdateAccountInfo(accounts[0]?.address);
+
+          return null;
+        } catch (e) {
+          console.error(e);
+        } finally {
+          handleAssetRefresh(asset?.index, false);
+          return null;
+        }
+      default:
+        return null;
     }
   }
 
@@ -428,6 +455,7 @@ const AssetListComponent = (props) => {
               <SigningMethods
                 handleAssetByMnemonic={() => handleOptInAssetByMnemonic(asset)}
                 handleAssetByAlgoSigner={() => handleOptInAlgoSignerInput()}
+                handleAssetByMyAlgoConnect={() => handleOptIn('MyAlgoConnect', asset)}
               />
             </Collapse>
             <Collapse
@@ -479,7 +507,7 @@ const AssetListComponent = (props) => {
                     ))}
                     {algoSignerWalletSelected !== null
                       ? (
-                        <Button onClick={() => handleOptInAlgoSigner(asset)}>
+                        <Button onClick={() => handleOptIn('AlgoSigner', asset)}>
                           Confirm
                         </Button>
                       ) : null}
