@@ -35,6 +35,7 @@ const App = () => {
   const indexerClient = new algosdk.Indexer(token, indexerServer, port);
 
   const account = useRef();
+  const ledger = useRef();
   /**
    * Set Account & Update Ref
    * @param {Object} info the account info object
@@ -42,6 +43,9 @@ const App = () => {
   const setAccount = (info) => {
     // console.log('account.current ', account.current);
     account.current = info;
+  };
+  const setLedger = (lgr) => {
+    ledger.current = lgr;
   }
   /**
    * Get Asset Information by ID
@@ -52,7 +56,7 @@ const App = () => {
     const assetInfo = await indexerClient.lookupAssetByID(id).do();
     // console.log('some asset info', assetInfo);
     return assetInfo;  
-  }
+  };
   /**
    * Get Account Information By Wallet Address
    * @param {string} id wallet address
@@ -61,7 +65,7 @@ const App = () => {
   const getAccountInformationByID = async (id) => {
     const accountInfo = await indexerClient.lookupAccountByID(id).do();
     return accountInfo;
-  }
+  };
   /**
    * Get Transaction Parameters
    * @async
@@ -73,12 +77,12 @@ const App = () => {
     } catch (e) {
       console.error(e);
     }
-  }
+  };
   
   return (
     <MainTheme>
       <Router>
-        <Nav />
+        <Nav user={account} />
         <div className="App container-fluid">
           <Switch>
             <Route
@@ -129,6 +133,8 @@ const App = () => {
                   algosdk={algosdk}
                   algodClient={algodClient}
                   handleSetAccount={setAccount}
+                  ledger={ledger}
+                  setLedger={setLedger}
                 />
               )}
             />
