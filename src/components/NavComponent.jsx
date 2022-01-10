@@ -7,17 +7,33 @@ import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
-const useStyles = makeStyles((theme) => ({
-  bar: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-  },
-}));
+const useStyles = makeStyles((theme) => {
+  console.log('the theme', theme);
+  return (
+    {
+      bar: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+      },
+      loggedIn: {
+        color: '#242729',
+      },
+      loggedOut: {
+        color: theme.palette.text.secondary,
+      },
+      home: {
+        color: theme.palette.text.secondary,
+      },
+    }
+  );
+});
 
-const Nav = () => {
+const Nav = (props) => {
+  // user obj
+  const { user } = props;
   // css
   const classes = useStyles();
   // to redirect
@@ -29,16 +45,17 @@ const Nav = () => {
     <AppBar position="static" className={classes.bar}>
       <IconButton
         edge="start"
-        color="inherit"
         aria-label="home"
         onClick={handleHomeRedirect}
+        className={classes.home}
       >
         <HomeIcon />
       </IconButton>
       <IconButton
         aria-label="account of current user"
         aria-controls="menu-appbar"
-        className={classes.account}
+        className={user?.current === undefined
+          ? classes.loggedIn : classes.loggedOut}
         aria-haspopup="true"
         onClick={handleProfileRedirect}
         color="inherit"
@@ -46,7 +63,7 @@ const Nav = () => {
         <AccountCircle />
       </IconButton>
     </AppBar>
-  )
+  );
 };
 
 export default Nav;
