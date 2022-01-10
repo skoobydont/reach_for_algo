@@ -93,7 +93,6 @@ const AssetListComponent = (props) => {
       </CardContent>
     );
   }
-  console.log('the user', user);
   /**
    * Generate Initial Asset State Object
    * @param {Boolean | String | Number} initialState value
@@ -393,7 +392,7 @@ const AssetListComponent = (props) => {
   return (
     <div className={classes.root}>
       {assets?.map(({ asset }, i) => {
-        console.log('the asset: ', asset);
+        // console.log('the asset: ', asset);
         return (
           <Card
             component={Paper}

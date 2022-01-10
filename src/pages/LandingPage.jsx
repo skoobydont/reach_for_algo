@@ -100,11 +100,31 @@ const LandingPage = (props) => {
             assetInfoRes.push(handleGetAssetInfo(asset['asset-id']));
           });
         }
-        console.log('asset info res', assetInfoRes);
-        const assetInfoResResolved = await Promise.all(assetInfoRes);
+        const assetInfoResResolved = await Promise.allSettled(assetInfoRes);
         console.log('asset info res after promise all', assetInfoResResolved);
         if (Array.isArray(assetInfoResResolved) && assetInfoResResolved?.length > 0) {
-          assets.current = assetInfoResResolved;
+          const retryArray = [];
+          const fullfilledArray = [];
+          let prmIndex = 0;
+          // doing this to try and ease any Too Many Requests from PureStakeAPI
+          while (prmIndex < assetInfoResResolved?.length) {
+            if (assetInfoResResolved[prmIndex]?.status === 'fulfilled') {
+              fullfilledArray.push(assetInfoResResolved[prmIndex]?.value);
+            }
+            if (assetInfoResResolved[prmIndex]?.status === 'rejected') {
+              retryArray.push(handleGetAccountInfo(assetInfoResResolved[prmIndex]?.value?.asset?.index));
+            }
+            prmIndex += 1;
+          }
+          const retryResResolved = await Promise.all(retryArray);
+          if (retryResResolved?.length > 0) {
+            assets.current = [
+              ...fullfilledArray,
+              ...retryResResolved,
+            ];
+          } else {
+            assets.current = [...fullfilledArray];
+          }
         }
       }
       setRefresh(false);
@@ -115,7 +135,7 @@ const LandingPage = (props) => {
       getWalletAssetsInfo(process.env.REACT_APP_BASE_WALLET_ADDRESS);
     }
   }, [assets, handleGetAccountInfo, handleGetAssetInfo]);
-  // console.log('the assets: ', assets);
+  console.log('the assets: ', assets);
   console.log('the ledger', ledger);
   return refresh ? <LinearProgress /> : (
     <div className={classes.root}>

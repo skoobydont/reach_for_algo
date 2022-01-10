@@ -8,7 +8,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles((theme) => {
-  console.log('the theme', theme);
+  // console.log('the theme', theme);
   return (
     {
       bar: {
