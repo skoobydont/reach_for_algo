@@ -36,8 +36,9 @@ const LandingPage = (props) => {
     ledger,
     setLedger,
   } = props;
-
   const assets = useRef();
+  console.log('the user?', user);
+  console.log('assets?', assets?.current);
   const [refresh, setRefresh] = useState(false);
   const [walletInput, setWalletInput] = useState('');
   /**
@@ -142,7 +143,7 @@ const LandingPage = (props) => {
       <Typography variant="subtitle1" color="primary">
         Real Estate For The Digital Age
       </Typography>
-      {user.current === null || user.current === undefined
+      {user === null || user === undefined
         ? (
           <>
             {/* TODO: When / if redesign, if wallet & net based,

@@ -17,7 +17,15 @@ const waitForConfirmation = async (algodClient, trxId) => {
     await algodClient.statusAfterBlock(lastRound).do();
   }
 };
-
+/**
+ * Create Opt In Transaction Object
+ * @async
+ * @param {Object} algosdk 
+ * @param {String} sender address string
+ * @param {Object} params suggested params
+ * @param {Object} asset asset to opt into
+ * @returns {Promise} transfer transaction object
+ */
 const createOptInTrx = async (algosdk, sender, params, asset) => {
   try {
     // for opt-in, sender & recipient will be the same address
@@ -42,9 +50,64 @@ const createOptInTrx = async (algosdk, sender, params, asset) => {
   } catch (e) {
     console.error(e);
   }
+};
+/**
+ * Get Algod Server Url
+ * @param {String} ledger ledger option
+ * @returns {String} appropriate string process env value if present
+ */
+const getAlgoServer = (ledger, env) => {
+  console.log(`get the algo server for ledger: ${ledger} | env: ${env.REACT_APP_TESTNET_ALGOD_SERVER_URL}`);
+  switch(ledger) {
+    case 'MainNet':
+      return env.REACT_APP_MAINNET_ALGOD_SERVER_URL;
+    case 'TestNet':
+      return env.REACT_APP_TESTNET_ALGOD_SERVER_URL;
+    case 'BetaNet':
+      return env.REACT_APP_BETANET_ALGOD_SERVER_URL;
+    default:
+      return '';
+  }
+}
+/**
+ * Get Indexer Server Url
+ * @param {String} ledger ledger option
+ * @returns {String} appropriate string process env value if present
+ */
+const getIndexerServer = (ledger, env) => {
+  switch(ledger) {
+    case 'MainNet':
+      return env.REACT_APP_MAINNET_INDEXER_SERVER_URL;
+    case 'TestNet':
+      return env.REACT_APP_TESTNET_INDEXER_SERVER_URL;
+    case 'BetaNet':
+      return env.REACT_APP_BETANET_INDEXER_SERVER_URL;
+    default:
+      return '';
+  }
+}
+/**
+ * Get Appropriate PureStake API Key
+ * @param {String} ledger ledger option
+ * @returns {String} appropriate string process env value if present
+ */
+const getPureStakeAPIToken = (ledger, env) => {
+  switch(ledger) {
+    case 'MainNet':
+      return env.REACT_APP_MAINNET_PURESTAKE_API_KEY;
+    case 'TestNet':
+      return env.REACT_APP_TESTNET_PURESTAKE_API_KEY;
+    case 'BetaNet':
+      return env.REACT_APP_BETANET_PURESTAKE_API_KEY;
+    default:
+      return '';
+  }
 }
 
 module.exports = {
   waitForConfirmation,
   createOptInTrx,
+  getAlgoServer,
+  getIndexerServer,
+  getPureStakeAPIToken,
 };
