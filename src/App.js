@@ -51,15 +51,9 @@ const App = () => {
   useEffect(() => {
     if (ledger?.length > 0) {
       if (algodServer?.length === 0) {
-        console.log(`get algo server for ledger: ${ledger} |`,
-          getAlgoServer(ledger, process.env)
-        );
         setAlgodServer(getAlgoServer(ledger, process.env));
       }
       if (indexerServer?.length === 0) {
-        console.log(`get indexer server for ledger: ${ledger} |`,
-          getIndexerServer(ledger, process.env)
-        );
         setIndexerServer(getIndexerServer(ledger, process.env));
       }
       if (token['X-API-KEY']?.length === 0) {
@@ -70,23 +64,17 @@ const App = () => {
     }
   }, [ledger, algodServer, indexerServer, token]);
   useEffect(() => {
-    console.log('in the client useeffect algodclient', algodClient);
-    console.log('in the client useeffect algod server', algodServer);
     if ((algodClient === null
       || algodClient === undefined)
-      && typeof algodServer !== 'string'
+      && String(algodServer)?.length > 0
     ) {
       setAlgodClient(new algosdk.Algodv2(token, algodServer, port));
     }
-    console.log('in the client useeffect indexerclient', indexerClient);
-    console.log('in the client useeffect indexer server', indexerServer);
     if ((indexerClient === null
       || indexerClient === undefined)
-      && typeof indexerServer !== 'string'
+      && String(indexerServer)?.length > 0
     ) {
-      const indexerClient = new algosdk.Indexer(token, indexerServer, port);
-      console.log('indexer client', indexerClient);
-      setIndexerClient(indexerClient);
+      setIndexerClient(new algosdk.Indexer(token, indexerServer, port));
     }
   }, [algodClient, algodServer, indexerClient, indexerServer, token]);
 
