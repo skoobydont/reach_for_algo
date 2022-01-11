@@ -10,6 +10,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 // Custom
 import AssetListComponent from '../components/AssetListComponent';
 
+const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -52,35 +54,6 @@ const LandingPage = (props) => {
     handleSetAccount(updatedAccountInfo);
     return updatedAccountInfo;
   };
-  /**
-   * Handle Select Ledger Option Change
-   * @param {Object} e event object
-   */  
-  // const handleSelectLedgerChange = (e) => {
-  //   setLedger(e.target.value);
-  // };
-  /**
-   * Handle Wallet Text Input Change
-   * @param {Object} e event object
-   */
-  // const handleWalletInputChange = (e) => {
-  //   setWalletInput(e.target.value);
-  // };
-  /**
-   * Handle Connect Wallet Submit
-   * @async
-   * @param {Object} e event object
-   */
-  // const handleConnectWalletSubmit = async (e) => {
-  //   e?.preventDefault();
-  //   // get wallet info
-  //   // update wallet info
-  //   if (walletInput !== null) {
-  //     setRefresh(true);
-  //     await handleUpdatingAccountInfo(walletInput);
-  //   }
-  //   setRefresh(false);
-  // };  
   // get assets from main wallet address
   useEffect(() => {
     /**
@@ -101,32 +74,11 @@ const LandingPage = (props) => {
             assetInfoRes.push(handleGetAssetInfo(asset['asset-id']));
           });
         }
-        const assetInfoResResolved = await Promise.allSettled(assetInfoRes);
+        const assetInfoResResolved = await Promise.all(assetInfoRes);
         console.log('asset info res after promise all', assetInfoResResolved);
-        if (Array.isArray(assetInfoResResolved) && assetInfoResResolved?.length > 0) {
-          const retryArray = [];
-          const fullfilledArray = [];
-          let prmIndex = 0;
-          // doing this to try and ease any Too Many Requests from PureStakeAPI
-          while (prmIndex < assetInfoResResolved?.length) {
-            if (assetInfoResResolved[prmIndex]?.status === 'fulfilled') {
-              fullfilledArray.push(assetInfoResResolved[prmIndex]?.value);
-            }
-            if (assetInfoResResolved[prmIndex]?.status === 'rejected') {
-              retryArray.push(handleGetAccountInfo(assetInfoResResolved[prmIndex]?.value?.asset?.index));
-            }
-            prmIndex += 1;
-          }
-          const retryResResolved = await Promise.all(retryArray);
-          if (retryResResolved?.length > 0) {
-            assets.current = [
-              ...fullfilledArray,
-              ...retryResResolved,
-            ];
-          } else {
-            assets.current = [...fullfilledArray];
-          }
-        }
+        
+        assets.current = [...assetInfoResResolved];        
+        
       }
       setRefresh(false);
       return walletInfo;

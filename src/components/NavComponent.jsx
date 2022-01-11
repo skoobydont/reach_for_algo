@@ -10,52 +10,46 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles((theme) => {
-  // console.log('the theme', theme);
-  return (
-    {
-      root: {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(2),
-      },
-      weIn: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      },
-      shouldLogIn: {
-        display: 'flex',
-        flexDirection: 'column',
-        margin: 'auto',
-        paddingTop: theme.spacing(1),
-      },
-      loggedIn: {
-        color: '#242729',
-      },
-      loggedOut: {
-        color: theme.palette.text.secondary,
-      },
-      home: {
-        color: theme.palette.text.secondary,
-      },
-      input: {
-        backgroundColor: theme.palette.background.main,
-        padding: theme.spacing(1),
-        marginBottom: theme.spacing(1),
-      },
-      walletSelectionList: {
-        display: 'flex',
-        flexDirection: 'column',
-      },
-      walletSelectionButton: {
-        marginBottom: theme.spacing(1),
-      },
-    }
-  );
-});
+const useStyles = makeStyles((theme) => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
+  weIn: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  shouldLogIn: {
+    display: 'flex',
+    flexDirection: 'column',
+    margin: 'auto',
+    paddingTop: theme.spacing(1),
+  },
+  loggedIn: {
+    color: '#242729',
+  },
+  loggedOut: {
+    color: theme.palette.text.secondary,
+  },
+  home: {
+    color: theme.palette.text.secondary,
+  },
+  input: {
+    backgroundColor: theme.palette.background.main,
+    padding: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+  walletSelectionList: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  walletSelectionButton: {
+    marginBottom: theme.spacing(1),
+  },
+}));
 
 const generateLedgerOptions = (options) => {
   let oIndex = 0;
@@ -81,14 +75,10 @@ const Nav = (props) => {
     handleSelectLedgerChange,
     handleGetAccountInfo,
     handleSetAccount,
-    algodClient,
-    indexerClient,
   } = props;
-  const [walletInput, setWalletInput] = useState('');
   const [selectedWallet, setSelectedWallet] = useState('');
   const [algoSignerWalletOptions, setAlgoSignerWalletOptions] = useState(null);
 
-  const handleWalletInputChange = (e) => setWalletInput(e.target.value);
   // css
   const classes = useStyles();
   // to redirect
@@ -111,9 +101,6 @@ const Nav = (props) => {
     });
     setAlgoSignerWalletOptions(accounts);
   };
-
-  console.log('the algodClient in nav comp', algodClient);
-  console.log('the indexer client in nav', indexerClient);
 
   return (
     <AppBar

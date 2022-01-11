@@ -78,8 +78,8 @@ const ProfilePage = (props) => {
   }, [refresh]);
 
   useEffect(() => {
-    if (assets === null && account?.current?.account !== undefined) {
-      getWalletAssetsInfo(account?.current?.account?.address);
+    if (assets === null && account?.account !== undefined) {
+      getWalletAssetsInfo(account?.account?.address);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assets]);
@@ -89,24 +89,24 @@ const ProfilePage = (props) => {
       <>
         {refresh
           ? <LinearProgress />
-          : account.current !== undefined
-            ? Object?.keys(account.current)?.includes('account')
+          : account !== undefined
+            ? Object?.keys(account)?.includes('account')
               ? (
                 <>
                   <Typography>
-                    My Account: {account?.current?.account?.address}
+                    My Account: {account?.account?.address}
                   </Typography>
                   <Typography>
-                    {commaFormat(account.current.account?.amount)} microAlgos
+                    {commaFormat(account.account?.amount)} microAlgos
                   </Typography>
                   <Button onClick={handleSignOut}>Sign Out</Button>
                 </>
               )
-              : Object.keys(account.current)?.includes('message')
+              : Object.keys(account)?.includes('message')
                 ? (
                   <>
                     <Typography>
-                      {account.current?.message}
+                      {account?.message}
                     </Typography>
                     <Button onClick={handleSignOut}>Sign Out</Button>
                   </>

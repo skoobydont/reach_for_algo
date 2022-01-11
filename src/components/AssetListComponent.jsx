@@ -355,25 +355,27 @@ const AssetListComponent = (props) => {
           // init myAlgoConnect
           const myAlgoConnect = new MyAlgoConnect({ disableLedgerNano: false });
           // Get Desired Account
-          const accounts = await myAlgoConnect.connect({
+          await myAlgoConnect.connect({
             shouldSelectOneAccount: false,
-            openManager: false,
+            openManager: true,
           });
           // Get Params
           const params = await getTransactionParams();
           // Create OptIn Transaction
           const optInTrx = await createOptInTrx(
             algosdk,
-            accounts[0]?.address,
+            user?.account?.address,
             params,
             asset,
           );
           // Sign & Submit Transaction
           const signedTrx = await myAlgoConnect.signTransaction(optInTrx.toByte());
+          // Send Signed Transaction
+          await algodClient.sendRawTransaction(signedTrx.blob).do();
           // Wait for confirmation
           await waitForConfirmation(algodClient, signedTrx.txID);
           // Update Account Info
-          await handleUpdateAccountInfo(accounts[0]?.address);
+          await handleUpdateAccountInfo(user?.account?.address);
 
           return null;
         } catch (e) {
@@ -388,7 +390,6 @@ const AssetListComponent = (props) => {
   }
 
   // https://dappradar.com/blog/algorand-dapp-development-2-standard-asset-management
-  console.log('some refresh', assetRefresh)
   return (
     <div className={classes.root}>
       {assets?.map(({ asset }, i) => {
