@@ -1,6 +1,6 @@
 /* global AlgoSigner */
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // MyAglo
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 // MUI
@@ -15,6 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Pagination from '@material-ui/lab/Pagination';
 // Icons
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
@@ -57,12 +58,17 @@ const AssetListComponent = (props) => {
     user,
     algosdk,
     handleUpdateAccountInfo,
+    assetIdList,
+    page,
+    setPage,
+    activeAssetId,
+    setActiveAssetId,
+    handleGetAssetInfo,
   } = props;
   const classes = useStyles();
 
   const SigningMethods = (props) => {
     const {
-      handleAssetByMnemonic,
       handleAssetByAlgoSigner,
       handleAssetByMyAlgoConnect
     } = props;
@@ -71,12 +77,6 @@ const AssetListComponent = (props) => {
         <Typography>
           Transaction Signing Methods:
         </Typography>
-        <Button
-          onClick={() => handleAssetByMnemonic()}
-          variant="contained"
-        >
-          Mnemonic
-        </Button>
         <Button
           disabled={AlgoSigner === undefined || AlgoSigner === null}
           onClick={() => handleAssetByAlgoSigner()}
@@ -110,49 +110,34 @@ const AssetListComponent = (props) => {
     }
     return result;
   }
-  const [assetCollapse, setAssetCollapse] = useState(initAssetState(false));
-  const [assetOptInCollaspe, setAssetOptInCollapse] = useState(initAssetState(false));
-  const [obtainAssetAmount, setObtainAssetAmount] = useState(initAssetState(INITOBTAINASSETAMOUNT));
-  const [obtainAssetNote, setObtainAssetNote] = useState(initAssetState(INITOBTAINASSETNOTE));
-  const [assetObtainCollaspe, setAssetObtainCollapse] = useState(initAssetState(false));
-  const [assetRefresh, setAssetRefresh] = useState(initAssetState(false));
+  const [assetCollapse, setAssetCollapse] = useState(false);
+  const [assetOptInCollaspe, setAssetOptInCollapse] = useState(false);
+  const [obtainAssetAmount, setObtainAssetAmount] = useState(INITOBTAINASSETAMOUNT);
+  const [obtainAssetNote, setObtainAssetNote] = useState(INITOBTAINASSETNOTE);
+  const [assetObtainCollaspe, setAssetObtainCollapse] = useState(false);
+  const [assetRefresh, setAssetRefresh] = useState(false);
   const [algoSignerWallets, setAlgoSignerWallets] = useState(null);
   const [algoSignerWalletSelected, setAlgoSignerWalletSelected] = useState(null);
+  const [activeAsset, setActiveAsset] = useState(null);
+  const [userAssetTotals, setUserAssetTotals] = useState({
+    userTotal: 0,
+    assetTotal: 0,
+  });
+  const [userOptedIn, setUserOptedIn] = useState(false);
   /**
    * Handle Toggle Asset Collapse At Index Given
    * @param {number} index the numerical index of the ASA
    * @returns {null}
    * @fires setAssetCollapse update attribute at passed index
    */
-  const handleToggleAssetCollapse = (index) => {
-    if (Object.keys(assetCollapse).includes(String(index))) {
-      setAssetCollapse({
-        ...assetCollapse,
-        [index]: !assetCollapse[index],
-      });
+  const handleToggleAssetCollapse = () => setAssetCollapse(!assetCollapse);
+  const handleToggleOptInCollapse = () => setAssetOptInCollapse(!assetOptInCollaspe);
+  const handleToggleObtainAssetCollapse = (index) => setAssetObtainCollapse(!assetObtainCollaspe);
+
+  const handleObtainAssetAmountChange = (e) => {
+    if (+e.target.value <= activeAsset?.params?.total) {
+      setObtainAssetAmount(+e.target.value);
     }
-    return null;
-  }
-  const handleToggleOptInCollapse = (index) => {
-    if (Object.keys(assetOptInCollaspe).includes(String(index))) {
-      setAssetOptInCollapse({
-        ...assetOptInCollaspe,
-        [index]: !assetOptInCollaspe[index],
-      });
-    }
-    return null;
-  }
-  const handleToggleObtainAssetCollapse = (index) => {
-    if (Object.keys(assetObtainCollaspe).includes(String(index))) {
-      setAssetObtainCollapse({
-        ...assetObtainCollaspe,
-        [index]: !assetObtainCollaspe[index],
-      });
-    }
-    return null;
-  }
-  const handleObtainAssetByMnemonicAmountChange = (e) => {
-    setObtainAssetAmount(+e.target.value);
   }
   const handleAssetRefresh = (index, value) => {
     setAssetRefresh({
@@ -160,7 +145,7 @@ const AssetListComponent = (props) => {
       [index]: value,
     });
   }
-  const handleObtainAssetByMnemonicNoteChange = (e) => {
+  const handleObtainAssetNoteChange = (e) => {
     setObtainAssetNote(e.target.value);
   }
   /**
@@ -388,100 +373,154 @@ const AssetListComponent = (props) => {
         return null;
     }
   }
+  const handlePaginationChange = (e, v) => {
+    setPage(v);
+  }
+
+  // update active asset id based on which page user is on
+  useEffect(() => {
+    // resest active asset to null so component refreshes visually
+    setActiveAsset(null);
+    setActiveAssetId(assetIdList[page - 1]);
+  }, [activeAssetId, assetIdList, page, setActiveAssetId]);
+  // update active asset state based on active asset id
+  useEffect(() => {
+    const getAssetInfo = async (id) => {
+      const assetInfo = await handleGetAssetInfo(id);
+      setActiveAsset(assetInfo?.asset);
+    };
+    if (String(activeAssetId)?.length > 0) {
+      getAssetInfo(activeAssetId);
+    }
+  }, [activeAssetId, handleGetAssetInfo]);
+  // get user asset amount
+  useEffect(() => {
+    const getUserAssetAmount = (asset) => {
+      const result = {
+        userTotal: 0,
+        assetTotal: asset?.params?.total,
+      };
+      if (Array.isArray(user?.account?.assets)
+        && user?.account?.assets?.length > 0) {
+          let uAIndex = 0;
+          while (uAIndex < user?.account?.assets?.length) {
+            // match by asset id & ensure user has at least opted in to asset
+            if (user?.account?.assets[uAIndex]?.['asset-id'] === asset?.index
+              && user?.account?.assets[uAIndex]?.amount >= 0) {
+                result.userTotal = +user?.account?.assets[uAIndex]?.amount;
+                break;
+              }
+            uAIndex += 1;
+          }
+      }
+      return result;
+    }
+    if (activeAsset !== null) {
+      setUserAssetTotals(getUserAssetAmount(activeAsset));
+    }
+  }, [activeAsset, user?.account?.assets]);
+  // check if user has opted into asset
+  useEffect(() => {
+    if (activeAsset !== null) {
+      setUserOptedIn(userHasOptedInToAsset(activeAsset?.index, user?.account?.assets));
+    }
+  }, [activeAsset, user]);
+  // console.log('the user', user);
+  // console.log('the active asset', activeAsset);
 
   // https://dappradar.com/blog/algorand-dapp-development-2-standard-asset-management
   return (
     <div className={classes.root}>
-      {assets?.map(({ asset }, i) => {
-        // console.log('the asset: ', asset);
-        return (
-          <Card
-            component={Paper}
-            key={i}
-            className={classes.card}
-          >
-            {assetRefresh[asset?.index]
-              ? <LinearProgress />
-              : (
-                <>
-                  <CardContent>
-                    <Typography>
-                      {asset?.params?.name}
-                    </Typography>
-                  </CardContent>
-                  <CardActions className={classes.cardActions}>
+      <>
+        <Card
+          component={Paper}
+          className={classes.card}
+        >
+          {activeAsset !== null
+            ? (
+              <>
+                <CardContent>
+                  <Typography>
+                    {`${activeAsset?.params?.name} (${activeAssetId})`}
+                  </Typography>
+                  <Typography>
+                    {`${userAssetTotals?.userTotal} / ${userAssetTotals?.assetTotal}`}
+                  </Typography>
+                </CardContent>
+                <CardActions className={classes.cardActions}>
+                  <>
                     <IconButton
-                      onClick={() => handleToggleAssetCollapse(asset?.index)}
+                      onClick={() => handleToggleAssetCollapse()}
+                      title='Additional Information'
                     >
-                      {assetCollapse[asset?.index]
+                      {assetCollapse
                         ? <ExpandLessIcon />
                         : <ExpandMoreIcon />}
                     </IconButton>
-                    {userHasOptedInToAsset(asset?.index, user?.current?.account?.assets)
-                      ? (
-                        <>
-                          <TextField
-                            type="number"
-                            onChange={(e) => handleObtainAssetByMnemonicAmountChange(e, asset?.params?.total)}
-                          />
-                          <TextField
-                            placeholder='Note (optional)'
-                            onChange={handleObtainAssetByMnemonicNoteChange}
-                          />
-                          <Button
-                            onClick={() => handleToggleObtainAssetCollapse(asset?.index)}
-                          >
-                            Obtain Asset
-                          </Button>
-                        </>
-                      ) : (
+                  </>
+                  {userOptedIn
+                    ? (
+                      <>
+                        <TextField
+                          type="number"
+                          onChange={(e) => handleObtainAssetAmountChange(e, activeAsset?.params?.total)}
+                        />
+                        <TextField
+                          placeholder='Note (optional)'
+                          onChange={handleObtainAssetNoteChange}
+                        />
                         <Button
-                          onClick={() => handleToggleOptInCollapse(asset?.index)}
+                          onClick={() => handleToggleObtainAssetCollapse()}
                         >
-                          Opt-In
+                          Obtain Asset
                         </Button>
-                      )}
-                  </CardActions>                  
-                </>
-              )
-            }
-            {/** Transaction Opt In Methods (mnemonic, myalgoconnect, etc?) */}
+                      </>
+                    ) : (
+                      <Button
+                        onClick={() => handleToggleOptInCollapse(activeAsset?.index)}
+                      >
+                        Opt-In
+                      </Button>
+                    )}
+                </CardActions>
+              </>
+            ) : <LinearProgress />}
+            {/* Various Collapses (Additional Info, OptIn & Transfer Trx Signing Methods, etc) */}
             <Collapse
-              in={assetOptInCollaspe[asset?.index]}
-              timeout="auto"
-              unmountOnExit
-              className={classes.card}
-            >
-              <SigningMethods
-                handleAssetByMnemonic={() => handleOptInAssetByMnemonic(asset)}
-                handleAssetByAlgoSigner={() => handleOptInAlgoSignerInput()}
-                handleAssetByMyAlgoConnect={() => handleOptIn('MyAlgoConnect', asset)}
-              />
-            </Collapse>
-            <Collapse
-              in={assetObtainCollaspe[asset?.index]}
-              timeout="auto"
-              unmountOnExit
-              className={classes.card}
-            >
-              <SigningMethods
-                handleAssetByMnemonic={() => handleObtainAssetByMnemonic(asset)}
-              />
-            </Collapse>
-            <Collapse
-              in={assetCollapse[asset?.index]}
+              in={assetCollapse}
               timeout="auto"
               unmountOnExit
               className={classes.card}
             >
               <CardContent>
-                <Typography>Show Collapsed Info For Asset At Index: {asset?.index}</Typography>
+                <Typography>Additional Info For Asset: {activeAsset?.index}</Typography>
               </CardContent>
+            </Collapse>
+            <Collapse
+              in={assetOptInCollaspe}
+              timeout="auto"
+              unmountOnExit
+              className={classes.card}
+            >
+              <SigningMethods
+                handleAssetByAlgoSigner={() => handleOptInAlgoSignerInput()}
+                handleAssetByMyAlgoConnect={() => handleOptIn('MyAlogConnect', activeAsset)}
+              />
+            </Collapse>
+            <Collapse
+              in={assetObtainCollaspe}
+              timeout="auto"
+              unmountOnExit
+              className={classes.card}
+            >
+              <SigningMethods
+                // TODO: MyAlgoConnect transfer transaction
+              />
             </Collapse>
             <Collapse
               in={algoSignerWallets !== null
                 && algoSignerWallets?.length > 0
-                && assetOptInCollaspe[asset?.index]
+                && assetOptInCollaspe
               }
               timeout="auto"
               unmountOnExit
@@ -507,18 +546,22 @@ const AssetListComponent = (props) => {
                     ))}
                     {algoSignerWalletSelected !== null
                       ? (
-                        <Button onClick={() => handleOptIn('AlgoSigner', asset)}>
+                        <Button onClick={() => handleOptIn('AlgoSigner', activeAsset)}>
                           Confirm
                         </Button>
                       ) : null}
                   </CardContent>
                 ) : null}
             </Collapse>
-          </Card>
-        );
-      })}
+        </Card>
+      </>
+      <Pagination
+        count={assetIdList?.length}
+        page={page}
+        onChange={handlePaginationChange}
+      />
     </div>
-  )   
+  )
 }
 
 export default AssetListComponent;

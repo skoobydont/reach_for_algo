@@ -43,6 +43,9 @@ const LandingPage = (props) => {
   console.log('assets?', assets?.current);
   const [refresh, setRefresh] = useState(false);
   const [walletInput, setWalletInput] = useState('');
+  const [assetIdList, setAssetIdList] = useState(user?.account?.assets?.map((a) => a['asset-id']));
+  const [page, setPage] = useState(1);
+  const [activeAssetId, setActiveAssetId] = useState('');
   /**
    * Handle Updating Account Info
    * @param {Object} addr wallet address information object returned from algo adk indexer
@@ -54,40 +57,41 @@ const LandingPage = (props) => {
     handleSetAccount(updatedAccountInfo);
     return updatedAccountInfo;
   };
+  
   // get assets from main wallet address
-  useEffect(() => {
-    /**
-     * Get Wallet & Asset Info
-     * @param {string} walletAddress the wallet you want info for
-     * @returns {Object} account obj & current round
-     * @fires setAssets with any assets associated with the wallet address (maybe
-     *  this changes to only display assets that match what main wallet has) (
-     *  only want to show assets in wallet that are also in main wallet i guess)
-     */
-    const getWalletAssetsInfo = async (walletAddress) => {
-      setRefresh(true);
-      const walletInfo = await handleGetAccountInfo(walletAddress);
-      if (typeof walletInfo === 'object' && Object.keys(walletInfo).includes('account')) {
-        const assetInfoRes = [];
-        if (Array.isArray(walletInfo.account?.assets)) {
-          walletInfo.account.assets.forEach((asset) => {
-            assetInfoRes.push(handleGetAssetInfo(asset['asset-id']));
-          });
-        }
-        const assetInfoResResolved = await Promise.all(assetInfoRes);
-        console.log('asset info res after promise all', assetInfoResResolved);
+  // useEffect(() => {
+  //   /**
+  //    * Get Wallet & Asset Info
+  //    * @param {string} walletAddress the wallet you want info for
+  //    * @returns {Object} account obj & current round
+  //    * @fires setAssets with any assets associated with the wallet address (maybe
+  //    *  this changes to only display assets that match what main wallet has) (
+  //    *  only want to show assets in wallet that are also in main wallet i guess)
+  //    */
+  //   const getWalletAssetsInfo = async (walletAddress) => {
+  //     setRefresh(true);
+  //     const walletInfo = await handleGetAccountInfo(walletAddress);
+  //     if (typeof walletInfo === 'object' && Object.keys(walletInfo).includes('account')) {
+  //       const assetInfoRes = [];
+  //       if (Array.isArray(walletInfo.account?.assets)) {
+  //         walletInfo.account.assets.forEach((asset) => {
+  //           assetInfoRes.push(handleGetAssetInfo(asset['asset-id']));
+  //         });
+  //       }
+  //       const assetInfoResResolved = await Promise.all(assetInfoRes);
+  //       console.log('asset info res after promise all', assetInfoResResolved);
         
-        assets.current = [...assetInfoResResolved];        
+  //       assets.current = [...assetInfoResResolved];        
         
-      }
-      setRefresh(false);
-      return walletInfo;
-    } 
-    if (assets.current === undefined) {
-      // get assets from main wallet
-      getWalletAssetsInfo(process.env.REACT_APP_BASE_WALLET_ADDRESS);
-    }
-  }, [assets, handleGetAccountInfo, handleGetAssetInfo]);
+  //     }
+  //     setRefresh(false);
+  //     return walletInfo;
+  //   } 
+  //   if (assets.current === undefined) {
+  //     // get assets from main wallet
+  //     getWalletAssetsInfo(process.env.REACT_APP_BASE_WALLET_ADDRESS);
+  //   }
+  // }, [assets, handleGetAccountInfo, handleGetAssetInfo]);
   console.log('the assets: ', assets);
   console.log('the ledger', ledger);
   return refresh ? <LinearProgress /> : (
@@ -124,9 +128,7 @@ const LandingPage = (props) => {
               <Button type="submit">Connect Wallet</Button>
             </form> */}
           </>
-        ) : null}
-      {Array.isArray(assets.current) && assets.current?.length
-        ? (
+        ) : (
           <div>
             <AssetListComponent
               assets={assets.current}
@@ -134,9 +136,15 @@ const LandingPage = (props) => {
               user={user}
               algosdk={algosdk}
               handleUpdateAccountInfo={handleUpdatingAccountInfo}
+              handleGetAssetInfo={handleGetAssetInfo}
+              assetIdList={assetIdList}
+              page={page}
+              setPage={setPage}
+              activeAssetId={activeAssetId}
+              setActiveAssetId={setActiveAssetId}
             />
           </div>
-        ) : null}
+        )}
     </div>
   );
 };
