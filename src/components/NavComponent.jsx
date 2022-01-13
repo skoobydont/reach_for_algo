@@ -50,7 +50,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
 }));
-
+/**
+ * Generate Ledger Options
+ * @param {Array} options which ledgers to support
+ * @returns {Array} MenuItem array with given options as values
+ */
 const generateLedgerOptions = (options) => {
   let oIndex = 0;
   const result = [];
@@ -65,7 +69,7 @@ const generateLedgerOptions = (options) => {
     oIndex += 1;
   }
   return result;
-}
+};
 
 const Nav = (props) => {
   // user obj
@@ -86,14 +90,24 @@ const Nav = (props) => {
   // redirect handlers
   const handleHomeRedirect = () => history.push('/reach_for_algo');
   const handleProfileRedirect = () => history.push('/profile');
-  // submit handler
+  /**
+   * Handle Connect Wallet Submit
+   * @async
+   * @param {String} addr wallet address to update with
+   * @fires setSelectedWallet to given address
+   * @fires handleSetAccount with updated account info
+   */
   const handleConnectWalletSubmit = async (addr) => {
     // update account into
     setSelectedWallet(addr);
     const updatedAccountInfo = await handleGetAccountInfo(addr);
     handleSetAccount(updatedAccountInfo);
   };
-
+  /**
+   * Handle Get Accounts To Select From Algo Signer
+   * @async
+   * @fires setAlgoSignerWalletOptions
+   */
   const handleGetAccountsAlgoSigner = async () => {
     await AlgoSigner?.connect();
     const accounts = await AlgoSigner?.accounts({
