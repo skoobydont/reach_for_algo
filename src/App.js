@@ -48,6 +48,7 @@ const App = () => {
 
   const [algodClient, setAlgodClient] = useState(null);
   const [indexerClient, setIndexerClient] = useState(null);
+  // Configure Algod + Indexer Servers, & API token values
   useEffect(() => {
     if (ledger?.length > 0) {
       if (algodServer?.length === 0) {
@@ -63,6 +64,7 @@ const App = () => {
       }
     }
   }, [ledger, algodServer, indexerServer, token]);
+  // Configure & Instantiate Aglod + Indexer Clients
   useEffect(() => {
     if ((algodClient === null
       || algodClient === undefined)
@@ -97,7 +99,6 @@ const App = () => {
    */
   const getAssetInformationByID = async (id) => {
     const assetInfo = await indexerClient.lookupAssetByID(id).do();
-    // console.log('some asset info', assetInfo);
     return assetInfo;  
   };
   /**
@@ -124,8 +125,6 @@ const App = () => {
   const handleSelectLedgerChange = (e) => {
     setLedger(e.target.value);
   };
-  console.log('my good ole algodclient', algodClient);
-  console.log('the indexer client: ', indexerClient);
   
   return (
     <MainTheme>
