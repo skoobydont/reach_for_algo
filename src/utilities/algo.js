@@ -26,7 +26,7 @@ const waitForConfirmation = async (algodClient, trxId) => {
  * @param {Object} asset asset to opt into
  * @returns {Promise} transfer transaction object
  */
-const createOptInTrx = async (algosdk, sender, params, asset) => {
+ const createOptInTrx = async (algosdk, sender, params, asset) => {
   try {
     // for opt-in, sender & recipient will be the same address
     const send = sender;
@@ -104,7 +104,7 @@ const getPureStakeAPIToken = (ledger, env) => {
   }
 }
 
-module.exports = {
+export {
   waitForConfirmation,
   createOptInTrx,
   getAlgoServer,

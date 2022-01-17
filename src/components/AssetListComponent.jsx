@@ -26,6 +26,7 @@ import {
   waitForConfirmation,
   createOptInTrx,
 } from '../utilities/algo';
+// import { createOptInTrx } from '../utilities/createOptInTrx';
 // Classes
 const useStyles = makeStyles((theme) => ({
   root: {
