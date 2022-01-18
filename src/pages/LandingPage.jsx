@@ -37,6 +37,7 @@ const LandingPage = (props) => {
     handleSetAccount,
     ledger,
     setLedger,
+    indexerClient,
   } = props;
   const assets = useRef();
   console.log('the user?', user);
@@ -57,79 +58,19 @@ const LandingPage = (props) => {
     handleSetAccount(updatedAccountInfo);
     return updatedAccountInfo;
   };
-  
-  // get assets from main wallet address
-  // useEffect(() => {
-  //   /**
-  //    * Get Wallet & Asset Info
-  //    * @param {string} walletAddress the wallet you want info for
-  //    * @returns {Object} account obj & current round
-  //    * @fires setAssets with any assets associated with the wallet address (maybe
-  //    *  this changes to only display assets that match what main wallet has) (
-  //    *  only want to show assets in wallet that are also in main wallet i guess)
-  //    */
-  //   const getWalletAssetsInfo = async (walletAddress) => {
-  //     setRefresh(true);
-  //     const walletInfo = await handleGetAccountInfo(walletAddress);
-  //     if (typeof walletInfo === 'object' && Object.keys(walletInfo).includes('account')) {
-  //       const assetInfoRes = [];
-  //       if (Array.isArray(walletInfo.account?.assets)) {
-  //         walletInfo.account.assets.forEach((asset) => {
-  //           assetInfoRes.push(handleGetAssetInfo(asset['asset-id']));
-  //         });
-  //       }
-  //       const assetInfoResResolved = await Promise.all(assetInfoRes);
-  //       console.log('asset info res after promise all', assetInfoResResolved);
-        
-  //       assets.current = [...assetInfoResResolved];        
-        
-  //     }
-  //     setRefresh(false);
-  //     return walletInfo;
-  //   } 
-  //   if (assets.current === undefined) {
-  //     // get assets from main wallet
-  //     getWalletAssetsInfo(process.env.REACT_APP_BASE_WALLET_ADDRESS);
-  //   }
-  // }, [assets, handleGetAccountInfo, handleGetAssetInfo]);
   console.log('the assets: ', assets);
   console.log('the ledger', ledger);
-  return refresh ? <LinearProgress /> : (
-    <div className={classes.root}>
-      <Typography variant="subtitle1" color="primary">
-        Real Estate For The Digital Age
-      </Typography>
-      {user === null || user === undefined
-        ? (
-          <>
-            {/* TODO: When / if redesign, if wallet & net based,
-              implement workflow to capture relevant info */}
-            {/* <Select
-              label="Ledger"
-              title="Ledger"
-              onChange={handleSelectLedgerChange}
-              value={ledger}
-            >
-              {['', 'MainNet', 'TestNet']?.map((lgr, i) => (
-                <MenuItem
-                  value={lgr}
-                  key={i}
-                >
-                  {lgr}
-                </MenuItem>
-              ))}
-            </Select>
-            <form onSubmit={handleConnectWalletSubmit}>
-              <TextField
-                label="Wallet Address"
-                value={walletInput}
-                onChange={handleWalletInputChange}
-              />
-              <Button type="submit">Connect Wallet</Button>
-            </form> */}
-          </>
-        ) : (
+  console.log('landpage user', user);
+  return refresh
+    ? <LinearProgress />
+    : user === null || user === undefined
+      ? null
+      : (
+        <div className={classes.root}>
           <div>
+            <Typography variant="subtitle1" color="primary">
+              Real Estate For The Digital Age
+            </Typography>
             <AssetListComponent
               assets={assets.current}
               algodClient={algodClient}
@@ -142,10 +83,10 @@ const LandingPage = (props) => {
               setPage={setPage}
               activeAssetId={activeAssetId}
               setActiveAssetId={setActiveAssetId}
+              indexerClient={indexerClient}
             />
           </div>
-        )}
-    </div>
+        </div>
   );
 };
 

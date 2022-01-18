@@ -138,7 +138,7 @@ const App = () => {
           algodClient={algodClient}
           indexerClient={indexerClient}
         />
-        {account !== null
+        {account !== null && account !== undefined
           ? (
             <>
               <div className="App container-fluid">
@@ -193,6 +193,7 @@ const App = () => {
                         handleSetAccount={handleSetAccount}
                         ledger={ledger}
                         setLedger={setLedger}
+                        indexerClient={indexerClient}
                       />
                     )}
                   />

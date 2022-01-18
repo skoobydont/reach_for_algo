@@ -26,7 +26,6 @@ import {
   waitForConfirmation,
   createOptInTrx,
 } from '../utilities/algo';
-// import { createOptInTrx } from '../utilities/createOptInTrx';
 // Classes
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +64,7 @@ const AssetListComponent = (props) => {
     activeAssetId,
     setActiveAssetId,
     handleGetAssetInfo,
+    indexerClient,
   } = props;
   const classes = useStyles();
 
@@ -426,8 +426,19 @@ const AssetListComponent = (props) => {
       setUserOptedIn(userHasOptedInToAsset(activeAsset?.index, user?.account?.assets));
     }
   }, [activeAsset, user]);
+  // check active asset balances
+  useEffect(() => {
+    const getAssetBalances = async (id) => {
+      const indexerResult = await indexerClient.lookupAssetBalances(id).do();
+      console.log('the indexer result', indexerResult);
+      
+    }
+    if (activeAsset !== null) {
+      getAssetBalances(activeAsset?.index);
+    }
+  }, [activeAsset, indexerClient]);
   // console.log('the user', user);
-  // console.log('the active asset', activeAsset);
+  console.log('the active asset', activeAsset);
 
   // https://dappradar.com/blog/algorand-dapp-development-2-standard-asset-management
   return (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router';
 // MUI
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -17,6 +18,7 @@ const ProfilePage = (props) => {
     handleGetAssetInfo,
     handleGetTransactionParams,
   } = props;
+  const history = useHistory();
   // https://dappradar.com/blog/algorand-dapp-development-2-standard-asset-management
   const [refresh, setRefresh] = useState(false);
   const [assets, setAssets] = useState(null);
@@ -66,6 +68,7 @@ const ProfilePage = (props) => {
     setRefresh(true);
     setAssets(null);
     handleSetAccount(undefined);
+    history.push('/reach_for_algo');
   };
 
   console.log('account', account);

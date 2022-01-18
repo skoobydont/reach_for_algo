@@ -1,6 +1,8 @@
 /* global AlgoSigner */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
+// MyAglo
+import MyAlgoConnect from '@randlabs/myalgo-connect';
 // MUI
 import { makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
@@ -82,7 +84,7 @@ const Nav = (props) => {
   } = props;
   const [selectedWallet, setSelectedWallet] = useState('');
   const [algoSignerWalletOptions, setAlgoSignerWalletOptions] = useState(null);
-
+  const [algoInt, setAlgoInit] = useState(false);
   // css
   const classes = useStyles();
   // to redirect
@@ -96,12 +98,18 @@ const Nav = (props) => {
    * @param {String} addr wallet address to update with
    * @fires setSelectedWallet to given address
    * @fires handleSetAccount with updated account info
+   * @fires handleHomeRedirect idk why it kept going to profile page
+   * @fires setSelectedWallet back to init
+   * @fires setAlgoSignerWalletOptions back to init
    */
   const handleConnectWalletSubmit = async (addr) => {
     // update account into
     setSelectedWallet(addr);
     const updatedAccountInfo = await handleGetAccountInfo(addr);
     handleSetAccount(updatedAccountInfo);
+    handleHomeRedirect();
+    setSelectedWallet('');
+    setAlgoSignerWalletOptions(null);
   };
   /**
    * Handle Get Accounts To Select From Algo Signer
@@ -115,13 +123,40 @@ const Nav = (props) => {
     });
     setAlgoSignerWalletOptions(accounts);
   };
+  /**
+   * Handle Wallet Connect via MyAlgo
+   * @async
+   * @fires handleConnectWalletSubmit
+   */
+  const handleMyAlgoConnect = async () => {
+    // use my algo connect to get account options
+    const myAlgoConnect = new MyAlgoConnect({ disableLedgerNano: false });
+    // throw in try catch block to handle if user cancels prompt
+    try {
+      const accounts = await myAlgoConnect.connect({
+        openManager: true,
+      });
+      if (Array.isArray(accounts)) {
+        // update user via handleConnectWalletSubmit
+        await handleConnectWalletSubmit(accounts?.[0]?.address);
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+  // Check if AlgoSigner is available
+  useEffect(() => {
+    if (typeof AlgoSigner !== 'undefined') {
+      setAlgoInit(AlgoSigner);
+    }
+  }, []);
 
   return (
     <AppBar
       position="static"
       className={classes.root}
     >
-      {user === null
+      {user === null || user === undefined
         ? (
           <div className={classes.shouldLogIn}>
             {/* TODO: When / if redesign, if wallet & net based,
@@ -144,16 +179,17 @@ const Nav = (props) => {
                 variant="outlined"
                 color="primary"
                 className={classes.walletSelectionButton}
-                disabled={AlgoSigner === undefined}
+                disabled={!Boolean(algoInt)}
                 onClick={handleGetAccountsAlgoSigner}
               >
                 AlgoSigner
-                {AlgoSigner === undefined ? ' not detected' : ''}
+                {!Boolean(algoInt) ? ' not detected' : ''}
               </Button>
               <Button
                 variant="outlined"
                 color="primary"
                 className={classes.walletSelectionButton}
+                onClick={handleMyAlgoConnect}
               >
                 MyAlgo Connect
               </Button>
@@ -184,20 +220,6 @@ const Nav = (props) => {
                   </div>
                 </>
               ) : null}
-            {/* <TextField
-              label="Wallet Address"
-              value={walletInput}
-              onChange={handleWalletInputChange}
-              variant="outlined"
-              className={classes.input}
-            />
-            <Button
-              onClick={handleConnectWalletSubmit}
-              variant="outlined"
-              className={classes.input}
-            >
-              Begin
-            </Button> */}
           </div>
         ) : (
           <div className={classes.weIn}>
