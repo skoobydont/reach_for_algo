@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'start',
+    marginTop: theme.spacing(1),
   },
   icon: {
     maxWidth: theme.spacing(5),

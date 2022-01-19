@@ -10,7 +10,10 @@ const MainTheme = ({ children }) => {
   const theme = createTheme({
     palette: {
       type: darkMode ? 'dark' : 'light',
-    }
+      background: {
+        main: '#282c34',
+      },
+    },
   });
   return (
     <ThemeProvider theme={theme}>

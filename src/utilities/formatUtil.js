@@ -1,7 +1,16 @@
+/**
+ * Comma Format
+ * @param {Number} n to format
+ * @returns {String} number value with commas
+ */
 export const commaFormat = (n) => {
   if (!n) return n;
-  // TODO: comma
-  return 'comma';
+  return String(n)?.split('')?.reverse()?.map((char, i) => {
+    if (i % 3 === 0 && i !== 0) {
+      return `${char},`;
+    }
+    return char;
+  })?.reverse()?.join('');
 }
 /**
  * Capitalize
