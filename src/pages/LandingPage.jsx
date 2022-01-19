@@ -84,10 +84,11 @@ const LandingPage = (props) => {
               activeAssetId={activeAssetId}
               setActiveAssetId={setActiveAssetId}
               indexerClient={indexerClient}
+              ledger={ledger}
             />
           </div>
         </div>
-  );
+      );
 };
 
 export default LandingPage;

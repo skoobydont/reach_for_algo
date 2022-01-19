@@ -17,14 +17,13 @@ import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Pagination from '@material-ui/lab/Pagination';
 // Icons
-import LockIcon from '@material-ui/icons/Lock';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 // Utilities
 import {
   waitForConfirmation,
   createOptInTrx,
+  createTransferTrx,
 } from '../utilities/algo';
 // Classes
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +45,21 @@ const useStyles = makeStyles((theme) => ({
   notSelectedWallet: {
     opacity: '75%',
   },
+  pagination: {
+    '& ul li .Mui-selected': {
+      color: theme.palette.primary.main,
+    },
+  },
+  obtainAssetInfo: {
+    margin: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: theme.spacing(1),
+  },
+  assetAmountTable: {
+    border: `1px #000 solid`,
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 const INITOBTAINASSETAMOUNT = 0;
@@ -65,6 +79,7 @@ const AssetListComponent = (props) => {
     setActiveAssetId,
     handleGetAssetInfo,
     indexerClient,
+    ledger,
   } = props;
   const classes = useStyles();
 
@@ -89,39 +104,23 @@ const AssetListComponent = (props) => {
           onClick={() => handleAssetByMyAlgoConnect()}
           variant="contained"
         >
-          My Algo Conect
+          MyAlgo Connect
         </Button>
       </CardContent>
     );
-  }
-  /**
-   * Generate Initial Asset State Object
-   * @param {Boolean | String | Number} initialState value
-   * @returns {Object} keys as asset index and passed value
-   */
-  const initAssetState = (initialState) => {
-    let result = {};
-    if (Array.isArray(assets) && assets?.length > 0) {
-      assets?.forEach(({ asset }) => {
-        result = {
-          ...result,
-          [`${asset?.index}`]: initialState,
-        }
-      });
-    }
-    return result;
-  }
+  };
   const [assetCollapse, setAssetCollapse] = useState(false);
   const [assetOptInCollaspe, setAssetOptInCollapse] = useState(false);
   const [obtainAssetAmount, setObtainAssetAmount] = useState(INITOBTAINASSETAMOUNT);
   const [obtainAssetNote, setObtainAssetNote] = useState(INITOBTAINASSETNOTE);
-  const [assetObtainCollaspe, setAssetObtainCollapse] = useState(false);
+  const [assetObtainCollape, setAssetObtainCollapse] = useState(false);
   const [assetRefresh, setAssetRefresh] = useState(false);
   const [algoSignerWallets, setAlgoSignerWallets] = useState(null);
   const [algoSignerWalletSelected, setAlgoSignerWalletSelected] = useState(null);
   const [activeAsset, setActiveAsset] = useState(null);
   const [userAssetTotals, setUserAssetTotals] = useState({
     userTotal: 0,
+    assetAvailable: 0,
     assetTotal: 0,
   });
   const [userOptedIn, setUserOptedIn] = useState(false);
@@ -133,18 +132,15 @@ const AssetListComponent = (props) => {
    */
   const handleToggleAssetCollapse = () => setAssetCollapse(!assetCollapse);
   const handleToggleOptInCollapse = () => setAssetOptInCollapse(!assetOptInCollaspe);
-  const handleToggleObtainAssetCollapse = (index) => setAssetObtainCollapse(!assetObtainCollaspe);
+  const handleToggleObtainAssetCollapse = () => setAssetObtainCollapse(!assetObtainCollape);
 
   const handleObtainAssetAmountChange = (e) => {
-    if (+e.target.value <= activeAsset?.params?.total) {
+    if (+e.target.value <= +userAssetTotals?.assetAvailable) {
       setObtainAssetAmount(+e.target.value);
     }
   }
-  const handleAssetRefresh = (index, value) => {
-    setAssetRefresh({
-      ...assetRefresh,
-      [index]: value,
-    });
+  const handleAssetRefresh = (value) => {
+    setAssetRefresh(value);
   }
   const handleObtainAssetNoteChange = (e) => {
     setObtainAssetNote(e.target.value);
@@ -161,56 +157,6 @@ const AssetListComponent = (props) => {
       console.error(e);
     }
   }
-  const handleOptInAssetByMnemonic = async (asset) => {
-    if (user.current === undefined) {
-      alert('Please sign in before opting in');
-      return null;
-    }
-    handleAssetRefresh(asset?.index, true);
-    try {
-      const params = await getTransactionParams();
-      // for opt-in, sender & recipient will be the same address
-      const sender = user.current.account.address;
-      const recipient = sender;
-      // We set revocationTarget to undefined as this is not a clawback operation
-      const revocationTarget = undefined;
-      // CloseReaminerTo is set to undefined as we are not closing out an asset
-      const closeRemainderTo = undefined;
-      const amount = 0;
-      // Construct transaction object
-      const optinTxn = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender,
-        recipient,
-        closeRemainderTo,
-        revocationTarget,
-        amount,
-        undefined,
-        asset?.index,
-        params,
-      );
-      // Prompt user for mnemonic so we can sign with sk
-      const account = algosdk.mnemonicToSecretKey(prompt('Please enter your secret mnemonic:'));
-      console.log('account from mnemonic: ', account);
-
-      const rawSignedTxn = optinTxn.signTxn(account?.sk);
-      const txId = optinTxn.txID().toString();
-      console.log('Singed transaction with txId: %s', txId);
-      // submit transaction
-      const trxSubmission = await algodClient.sendRawTransaction(rawSignedTxn).do();
-      console.log('the transaction submission: ', trxSubmission);
-      // Wait for confirmation
-      const confirmedTrxn = await waitForConfirmation(algodClient, txId);
-      console.log('submit handler, confirmedTrxn: ', confirmedTrxn);
-      const updatedAccountInfo = await handleUpdateAccountInfo(user.current.account.address);
-      console.log('the updated account info from trx submission', updatedAccountInfo);
-      return null;
-
-    } catch (e) {
-      console.error(e);
-    } finally {
-      handleAssetRefresh(asset?.index, false)
-    }
-  }
   const userHasOptedInToAsset = (assetId, userAssets) => {
     let result = false;
     if (Array.isArray(userAssets) && userAssets?.length > 0) {
@@ -222,71 +168,12 @@ const AssetListComponent = (props) => {
     }
     return result;
   }
-  const handleObtainAssetByMnemonic = async (asset) => {
-    handleAssetRefresh(asset?.index, true);
-    try {
-      const params = await getTransactionParams();
-      // console.log('oh boy sending transfer transaction by mnemonic| the params: ', params);
-  
-      const sender = asset?.params?.creator;
-      const recipient = user?.current?.account?.address;
-  
-      const revocationTarget = undefined;
-      const closeRemainderTo = undefined;
-  
-      const assetId = asset?.index;
-  
-      const amount = +obtainAssetAmount;
-      const note = algosdk.encodeObj(obtainAssetNote);
-      // console.log('an obj of the trx: ', {
-      //   sender,
-      //   recipient,
-      //   closeRemainderTo,
-      //   revocationTarget,
-      //   amount,
-      //   note,
-      //   assetId,
-      //   params,
-      // });
-      const transferTransaction = algosdk.makeAssetTransferTxnWithSuggestedParams(
-        sender,
-        recipient,
-        closeRemainderTo,
-        revocationTarget,
-        amount,
-        note,
-        assetId,
-        params,
-      );
-      // Prompt user for mnemonic so we can sign with sk
-      const account = algosdk.mnemonicToSecretKey(process.env.REACT_APP_BASE_WALLET_MNEMONIC);
-      // console.log('account from mnemonic: ', account);
-      const rawSignedTxn = transferTransaction.signTxn(account?.sk);
-      const txId = transferTransaction.txID().toString();
-      // console.log('Singed transaction with txId: %s', txId);
-      // submit transaction
-      const trxSubmission = await algodClient.sendRawTransaction(rawSignedTxn).do();
-      // console.log('the transaction submission: ', trxSubmission);
-      
-      // Wait for confirmation
-      const confirmedTrxn = await waitForConfirmation(algodClient, txId);
-      // console.log('submit handler, confirmedTrxn: ', confirmedTrxn);
-      const updatedAccountInfo = await handleUpdateAccountInfo(user.current.account.address);
-      // console.log('the updated account info from trx submission', updatedAccountInfo);
-      return trxSubmission;
-
-    } catch (e) {
-      console.error(e);
-    } finally {
-      handleAssetRefresh(asset?.index, false);
-    }
-  }
-  const handleOptInAlgoSignerInput = async () => {
+  const handleGetAlgoSignerWallets = async () => {
     // this just connects to AlgoSigner, user will need to choose account to use
     if (AlgoSigner) {
       await AlgoSigner.connect();
       const accounts = await AlgoSigner.accounts({
-        ledger: 'TestNet',
+        ledger,
       });
       setAlgoSignerWallets(accounts);
       return null;
@@ -295,8 +182,7 @@ const AssetListComponent = (props) => {
         address: 'AlgoSigner not detected',
       }]);
     }
-  }  
-
+  }
   const handleOptIn = async (signMethod, asset) => {
     switch(signMethod) {
       case 'AlgoSigner':
@@ -304,7 +190,7 @@ const AssetListComponent = (props) => {
           console.error('Please select valid wallet');
           return null;
         }
-        handleAssetRefresh(asset?.index, true);
+        handleAssetRefresh(true);
         try {
           const params = await getTransactionParams();
           const optInTrx = createOptInTrx(
@@ -320,7 +206,7 @@ const AssetListComponent = (props) => {
           // Send signed transaction
           // TODO: implement Ledger Handling
           const submittedSignedTrx = await AlgoSigner.send({
-            ledger: 'TestNet',
+            ledger,
             tx: signedTx[0]?.blob,
           });
           // Wait for confirmation
@@ -332,11 +218,11 @@ const AssetListComponent = (props) => {
         } catch (e) {
           console.error(e);
         } finally {
-          handleAssetRefresh(asset?.index, false);
+          handleAssetRefresh(false);
           return null;
         }
       case 'MyAlgoConnect':
-        handleAssetRefresh(asset?.index, true);
+        handleAssetRefresh(true);
         try {
           // init myAlgoConnect
           const myAlgoConnect = new MyAlgoConnect({ disableLedgerNano: false });
@@ -367,16 +253,55 @@ const AssetListComponent = (props) => {
         } catch (e) {
           console.error(e);
         } finally {
-          handleAssetRefresh(asset?.index, false);
+          handleAssetRefresh(false);
           return null;
         }
       default:
         return null;
     }
-  }
+  };
   const handlePaginationChange = (e, v) => {
     setPage(v);
-  }
+  };
+  /**
+   * Handle Transfer Transaction
+   * @async
+   * @returns {null}
+   */
+  const handleTransferTransaction = async () => {
+    handleAssetRefresh(true);
+    try {
+      // get suggested params
+      const params = await getTransactionParams();
+      // create transfer transaction
+      const transferTrx = await createTransferTrx(
+        algosdk,
+        user?.account?.address,
+        params,
+        activeAsset,
+        obtainAssetAmount,
+        obtainAssetNote,
+      );
+      // derive sk from mnemonic
+      const account = algosdk.mnemonicToSecretKey(process.env.REACT_APP_BASE_WALLET_MNEMONIC);
+      // Sign transfer transaction
+      const rawSignedTxn = transferTrx.signTxn(account?.sk);
+      // submit transaction
+      await algodClient.sendRawTransaction(rawSignedTxn).do();
+      // Wait for confirmation
+      const waited = await waitForConfirmation(algodClient, transferTrx.txID().toString());
+      console.log('waited', waited);
+      // update account info
+      await handleUpdateAccountInfo(user.account.address);
+
+      return null;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      handleAssetRefresh(false);
+      return null;
+    }
+  };
 
   // update active asset id based on which page user is on
   useEffect(() => {
@@ -394,53 +319,60 @@ const AssetListComponent = (props) => {
       getAssetInfo(activeAssetId);
     }
   }, [activeAssetId, handleGetAssetInfo]);
+
   // get user asset amount
   useEffect(() => {
-    const getUserAssetAmount = (asset) => {
-      const result = {
-        userTotal: 0,
-        assetTotal: asset?.params?.total,
-      };
-      if (Array.isArray(user?.account?.assets)
-        && user?.account?.assets?.length > 0) {
-          let uAIndex = 0;
-          while (uAIndex < user?.account?.assets?.length) {
-            // match by asset id & ensure user has at least opted in to asset
-            if (user?.account?.assets[uAIndex]?.['asset-id'] === asset?.index
-              && user?.account?.assets[uAIndex]?.amount >= 0) {
-                result.userTotal = +user?.account?.assets[uAIndex]?.amount;
-                break;
-              }
-            uAIndex += 1;
+    const getAmounts = async () => {
+      const getUserAssetAmount = async (asset) => {
+        const result = {
+          userTotal: 0,
+          assetAvailable: 0,
+          assetTotal: asset?.params?.total,
+        };
+        const indexerResult = await indexerClient.lookupAssetBalances(asset?.index).do();
+        let walletIndex = 0;
+        while (walletIndex < indexerResult?.balances?.length) {
+          if (indexerResult?.balances[walletIndex]?.address === process.env.REACT_APP_BASE_WALLET_ADDRESS) {
+            result.assetAvailable = indexerResult?.balances[walletIndex]?.amount;
           }
+          if (indexerResult?.balances[walletIndex]?.address === user?.account?.address) {
+            result.userTotal = indexerResult?.balances[walletIndex]?.amount;
+          }
+          walletIndex += 1;
+        }
+        return result;
+      };
+      if (activeAsset !== null && assetObtainCollape) {
+        setUserAssetTotals(await getUserAssetAmount(activeAsset));
       }
-      return result;
     }
-    if (activeAsset !== null) {
-      setUserAssetTotals(getUserAssetAmount(activeAsset));
-    }
-  }, [activeAsset, user?.account?.assets]);
+    // get asset amounts & update state
+    getAmounts();
+  }, [activeAsset, user?.account, indexerClient, assetObtainCollape]);
   // check if user has opted into asset
   useEffect(() => {
     if (activeAsset !== null) {
       setUserOptedIn(userHasOptedInToAsset(activeAsset?.index, user?.account?.assets));
     }
   }, [activeAsset, user]);
-  // check active asset balances
+  // reset state if change page or refresh asset
   useEffect(() => {
-    const getAssetBalances = async (id) => {
-      const indexerResult = await indexerClient.lookupAssetBalances(id).do();
-      console.log('the indexer result', indexerResult);
-      
-    }
-    if (activeAsset !== null) {
-      getAssetBalances(activeAsset?.index);
-    }
-  }, [activeAsset, indexerClient]);
+    setAssetCollapse(false);
+    setAssetOptInCollapse(false);
+    setAssetObtainCollapse(false);
+    setObtainAssetAmount(INITOBTAINASSETAMOUNT);
+    setObtainAssetNote(INITOBTAINASSETNOTE);
+    setAlgoSignerWallets(null);
+    setAlgoSignerWalletSelected(null);
+    setUserAssetTotals({
+      userTotal: 0,
+      assetAvailable: 0,
+      assetTotal: 0,
+    });
+  }, [page, assetRefresh]);
   // console.log('the user', user);
-  console.log('the active asset', activeAsset);
-
-  // https://dappradar.com/blog/algorand-dapp-development-2-standard-asset-management
+  // console.log('the active asset', activeAsset);
+  // console.log('the algo signer wallets', algoSignerWallets);
   return (
     <div className={classes.root}>
       <>
@@ -448,15 +380,12 @@ const AssetListComponent = (props) => {
           component={Paper}
           className={classes.card}
         >
-          {activeAsset !== null
+          {assetRefresh ? <LinearProgress /> : activeAsset !== null
             ? (
               <>
                 <CardContent>
                   <Typography>
-                    {`${activeAsset?.params?.name} (${activeAssetId})`}
-                  </Typography>
-                  <Typography>
-                    {`${userAssetTotals?.userTotal} / ${userAssetTotals?.assetTotal}`}
+                    {activeAsset?.params?.name}
                   </Typography>
                 </CardContent>
                 <CardActions className={classes.cardActions}>
@@ -472,24 +401,18 @@ const AssetListComponent = (props) => {
                   </>
                   {userOptedIn
                     ? (
-                      <>
-                        <TextField
-                          type="number"
-                          onChange={(e) => handleObtainAssetAmountChange(e, activeAsset?.params?.total)}
-                        />
-                        <TextField
-                          placeholder='Note (optional)'
-                          onChange={handleObtainAssetNoteChange}
-                        />
-                        <Button
-                          onClick={() => handleToggleObtainAssetCollapse()}
-                        >
-                          Obtain Asset
-                        </Button>
-                      </>
+                      <Button
+                        onClick={() => handleToggleObtainAssetCollapse()}
+                        color={assetObtainCollape
+                          ? 'primary' : 'inherit'}
+                      >
+                        Obtain Asset
+                      </Button>
                     ) : (
                       <Button
                         onClick={() => handleToggleOptInCollapse(activeAsset?.index)}
+                        color={assetOptInCollaspe
+                          ? 'primary' : 'inherit'}
                       >
                         Opt-In
                       </Button>
@@ -515,24 +438,58 @@ const AssetListComponent = (props) => {
               className={classes.card}
             >
               <SigningMethods
-                handleAssetByAlgoSigner={() => handleOptInAlgoSignerInput()}
+                handleAssetByAlgoSigner={() => handleGetAlgoSignerWallets()}
                 handleAssetByMyAlgoConnect={() => handleOptIn('MyAlogConnect', activeAsset)}
               />
             </Collapse>
             <Collapse
-              in={assetObtainCollaspe}
+              in={assetObtainCollape}
               timeout="auto"
               unmountOnExit
               className={classes.card}
             >
-              <SigningMethods
-                // TODO: MyAlgoConnect transfer transaction
-              />
+              <div className={classes.obtainAssetInfo}>
+                <table className={classes.assetAmountTable}>
+                  <thead>
+                    <tr>
+                      <td>Owned</td>
+                      <td>Available</td>
+                      <td>Total</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{userAssetTotals?.userTotal}</td>
+                      <td>{userAssetTotals?.assetAvailable}</td>
+                      <td>{userAssetTotals?.assetTotal}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <Typography>Amount</Typography>
+                <TextField
+                  type="number"
+                  onChange={(e) => handleObtainAssetAmountChange(e)}
+                  value={obtainAssetAmount}
+                />
+                <TextField
+                  placeholder='Note (optional)'
+                  onChange={handleObtainAssetNoteChange}
+                />
+                <Button
+                  disabled={obtainAssetAmount <= 0}
+                  onClick={handleTransferTransaction}
+                  variant="contained"
+                  color="primary"
+                >
+                  Confirm
+                </Button>
+              </div>
             </Collapse>
             <Collapse
               in={algoSignerWallets !== null
                 && algoSignerWallets?.length > 0
-                && assetOptInCollaspe
+                && (assetOptInCollaspe
+                  || assetObtainCollape)
               }
               timeout="auto"
               unmountOnExit
@@ -558,7 +515,12 @@ const AssetListComponent = (props) => {
                     ))}
                     {algoSignerWalletSelected !== null
                       ? (
-                        <Button onClick={() => handleOptIn('AlgoSigner', activeAsset)}>
+                        <Button
+                          onClick={!userOptedIn
+                            ? () => handleOptIn('AlgoSigner', activeAsset)
+                            : () => handleTransferTransaction()
+                          }
+                        >
                           Confirm
                         </Button>
                       ) : null}
@@ -568,12 +530,13 @@ const AssetListComponent = (props) => {
         </Card>
       </>
       <Pagination
+        className={classes.pagination}    
         count={assetIdList?.length}
         page={page}
         onChange={handlePaginationChange}
       />
     </div>
-  )
-}
+  );
+};
 
 export default AssetListComponent;

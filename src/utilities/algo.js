@@ -24,7 +24,7 @@ const waitForConfirmation = async (algodClient, trxId) => {
  * @param {String} sender address string
  * @param {Object} params suggested params
  * @param {Object} asset asset to opt into
- * @returns {Promise} transfer transaction object
+ * @returns {Promise} transfer opt in object
  */
  const createOptInTrx = async (algosdk, sender, params, asset) => {
   try {
@@ -45,6 +45,45 @@ const waitForConfirmation = async (algodClient, trxId) => {
       amount,
       undefined,
       asset?.index,
+      params,
+    );
+  } catch (e) {
+    console.error(e);
+  }
+};
+/**
+ * Create Transfer Transaction Object
+ * @async
+ * @param {Object} algosdk 
+ * @param {String} recipient address to receive asset
+ * @param {Object} params suggested params
+ * @param {Object} asset asset to obtain
+ * @param {Number} obtainAmount numerical value to obtain
+ * @param {String} obtainNote optional note for transaction
+ * @returns {Promise} transfer transaction object
+ */
+const createTransferTrx = async (algosdk, recipient, params, asset, obtainAmount, obtainNote) => {
+  try {
+    // for transfer, transaction will need to come from creator
+    const sender = asset?.params?.creator;
+    // We set revocationTarget to undefined as this is not a clawback operation
+    const revocationTarget = undefined;
+    // CloseReaminerTo is set to undefined as we are not closing out an asset
+    const closeRemainderTo = undefined;
+
+    const assetId = asset?.index;
+
+    const amount = +obtainAmount;
+    const note = algosdk.encodeObj(obtainNote);
+    // Construct transaction transfer object
+    return await algosdk.makeAssetTransferTxnWithSuggestedParams(
+      sender,
+      recipient,
+      closeRemainderTo,
+      revocationTarget,
+      amount,
+      note,
+      assetId,
       params,
     );
   } catch (e) {
@@ -110,4 +149,5 @@ export {
   getAlgoServer,
   getIndexerServer,
   getPureStakeAPIToken,
+  createTransferTrx,
 };
