@@ -64,6 +64,7 @@ const generateLedgerOptions = (options) => {
     result.push(
       <MenuItem
         value={options[oIndex]}
+        key={oIndex}
       >
         {options[oIndex]}
       </MenuItem>
@@ -159,8 +160,6 @@ const Nav = (props) => {
       {user === null || user === undefined
         ? (
           <div className={classes.shouldLogIn}>
-            {/* TODO: When / if redesign, if wallet & net based,
-              implement workflow to capture relevant info */}
             <Typography>Choose Ledger</Typography>
             <Select
               label="Ledger"
@@ -209,6 +208,7 @@ const Nav = (props) => {
                     {algoSignerWalletOptions?.map(({ address }, i) => (
                       <Button
                         variant="outlined"
+                        key={i + address}
                         color={address === selectedWallet ? "inherit" : "primary"}
                         className={i !== algoSignerWalletOptions?.length
                           ? classes.walletSelectionButton : null}

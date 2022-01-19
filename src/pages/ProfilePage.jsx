@@ -13,13 +13,10 @@ const ProfilePage = (props) => {
   const {
     account,
     handleSetAccount,
-    algosdk,
     handleGetAccountInfo,
     handleGetAssetInfo,
-    handleGetTransactionParams,
   } = props;
   const history = useHistory();
-  // https://dappradar.com/blog/algorand-dapp-development-2-standard-asset-management
   const [refresh, setRefresh] = useState(false);
   const [assets, setAssets] = useState(null);
   const [walletInput, setWalletInput] = useState('');
@@ -40,9 +37,7 @@ const ProfilePage = (props) => {
           assetInfoRes.push(handleGetAssetInfo(asset['asset-id']));
         });
       }
-      console.log('asset info res', assetInfoRes);
       const assetInfoResResolved = await Promise.all(assetInfoRes);
-      console.log('asset info res after promise all', assetInfoResResolved);
       if (Array.isArray(assetInfoResResolved) && assetInfoResResolved?.length > 0) {
         setAssets(assetInfoResResolved);
       }
@@ -50,42 +45,43 @@ const ProfilePage = (props) => {
     setRefresh(true);
     return walletInfo;
   }
-
-  // const getTransactionParams = async () => {
-  //   const tParams = await handleGetTransactionParams();
-  //   console.log('some transaction params', tParams);
-  //   return tParams;
-  // }
-
+  /**
+   * Handle Submit
+   * @async
+   * @fires handleSetAccount
+   * @param {Object} e event
+   */
   const handleSubmit = async (e) => {
     e?.preventDefault();
     const walletInfo = await getWalletAssetsInfo(walletInput);
-    console.log('handle submit wallet info: ', walletInfo);
     handleSetAccount(walletInfo);
   }
-
+  /**
+   * Handle Sign Out
+   * @fires setRefresh
+   * @fires setAssets
+   * @fires handleSetAccount
+   * @fires history.push
+   */
   const handleSignOut = () => {
     setRefresh(true);
     setAssets(null);
     handleSetAccount(undefined);
     history.push('/reach_for_algo');
   };
-
-  console.log('account', account);
-  console.log('the assets', assets);
-
+  // handle refresh
   useEffect(() => {
     if (refresh) {
       setRefresh(false);
     }
   }, [refresh]);
-
+  // grab assets associated with logged in wallet
   useEffect(() => {
     if (assets === null && account?.account !== undefined) {
       getWalletAssetsInfo(account?.account?.address);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [assets]);
+  }, [account?.account, assets]);
 
   return (
     <div>
@@ -125,17 +121,6 @@ const ProfilePage = (props) => {
                 <Button type="submit">Submit</Button>
               </form>
             )}
-        {/* <Button
-          onClick={() => getWalletAssetsInfo(process.env.REACT_APP_BASE_WALLET_ADDRESS)}
-          variant="contained"
-        >
-          Get Assets
-        </Button>
-        <Button
-          onClick={() => getTransactionParams()}
-        >
-          Transaction Params
-        </Button> */}
         {Array.isArray(assets) && assets?.length > 0
           ? (
             <div>

@@ -96,7 +96,6 @@ const createTransferTrx = async (algosdk, recipient, params, asset, obtainAmount
  * @returns {String} appropriate string process env value if present
  */
 const getAlgoServer = (ledger, env) => {
-  console.log(`get the algo server for ledger: ${ledger} | env: ${env.REACT_APP_TESTNET_ALGOD_SERVER_URL}`);
   switch(ledger) {
     case 'MainNet':
       return env.REACT_APP_MAINNET_ALGOD_SERVER_URL;

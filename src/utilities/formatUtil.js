@@ -1,3 +1,4 @@
+var CryptoJS = require('crypto-js');
 /**
  * Comma Format
  * @param {Number} n to format
@@ -24,5 +25,11 @@ export const capitalize = (s) => {
 }
 
 export const dollarFormat = (n) => `$${n}`;
+
+export const decrypt = (text, key) => {
+  const decrypted = CryptoJS.AES.decrypt(text, key);
+  // encode decrypted buffer to utf8 string
+  return decrypted.toString(CryptoJS.enc.Utf8);
+};
 
 export default dollarFormat;

@@ -1,7 +1,5 @@
-
 import React, {
   useState,
-  useRef,
   useEffect,
 } from 'react';
 
@@ -12,20 +10,15 @@ import {
 } from 'react-router-dom';
 
 import algosdk from 'algosdk';
-// import * as reach from '@reach-sh/stdlib/ALGO';
-
-// MUI
-import LinearProgress from '@material-ui/core/LinearProgress';
 
 import './App.css';
+// Pages
+import LandingPage from './pages/LandingPage';
+import ProfilePage from './pages/ProfilePage';
+// Custom
 import MainTheme from './components/Theme';
 import Nav from './components/NavComponent';
 import Footer from './components/FooterComponent';
-import LandingPage from './pages/LandingPage';
-import ProductPage from './pages/ProductPage';
-import ProfilePage from './pages/ProfilePage';
-import AccountPage from './pages/AccountPage';
-// Custom
 import {
   getAlgoServer,
   getIndexerServer,
@@ -80,17 +73,6 @@ const App = () => {
     }
   }, [algodClient, algodServer, indexerClient, indexerServer, token]);
 
-  // Begin SDK Setup
-  // const algodServer = `${getAlgoServer(ledger)}`
-  // const indexerServer = `${getIndexerServer(ledger)}`
-  // const token = { 'X-API-Key': `${getPureStakeAPIToken(ledger)}` }
-  // TODO: incorporate creating asa & indexing assets
-  // ie https://purestake.github.io/algosigner-dapp-example/
-  // Only initialize if above is defined in env
-  // if (algodServer?.length > 0 && indexerServer?.length > 0) {
-  //   algodClient = new algosdk.Algodv2(token, algodServer, port);
-  //   indexerClient = new algosdk.Indexer(token, indexerServer, port);
-  // }
   const handleSetAccount = (info) => setAccount(info);
   /**
    * Get Asset Information by ID
@@ -106,8 +88,13 @@ const App = () => {
    * @param {string} id wallet address
    * @returns {Object} accountInformation
    */
-  const getAccountInformationByID = async (id) => {
-    const accountInfo = await indexerClient.lookupAccountByID(id).do();
+  const getAccountInformationByID = async (id, round = null) => {
+    let accountInfo = {};
+    if (round !== null) {
+      accountInfo = await indexerClient.lookupAccountByID(id).round(round).do();
+    } else {
+      accountInfo = await indexerClient.lookupAccountByID(id).do();
+    }
     return accountInfo;
   };
   /**
@@ -155,26 +142,6 @@ const App = () => {
                         handleGetAssetInfo={getAssetInformationByID}
                         handleGetTransactionParams={getTransactionParams}
                         algosdk={algosdk}
-                      />
-                    )}
-                  />
-                  <Route
-                    path="/account"
-                    exact
-                    render={(props) => (
-                      <AccountPage
-                        {...props}
-                        user={account}
-                      />
-                    )}
-                  />
-                  <Route
-                    path="/property/:id"
-                    exact
-                    render={(props) => (
-                      <ProductPage
-                        {...props}
-                        user={account}
                       />
                     )}
                   />

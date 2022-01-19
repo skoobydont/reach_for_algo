@@ -4,7 +4,6 @@ import { useHistory } from 'react-router';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
 import Chip from '@material-ui/core/Chip';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -12,7 +11,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Paper from '@material-ui/core/Paper';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -89,7 +87,6 @@ const ProductPage = () => {
    * @fires setExpandTL to new panel or close
    */
   const handleExpandTL = (panel) => (e, newE) => setExpandTL(newE ? panel : false);
-  // console.log('prop info', propInfo);
   return (
     <div className={classes.root}>
       <div className={classes.header}>

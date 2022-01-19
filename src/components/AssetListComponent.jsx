@@ -25,6 +25,7 @@ import {
   createOptInTrx,
   createTransferTrx,
 } from '../utilities/algo';
+import { decrypt } from '../utilities/formatUtil';
 // Classes
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,7 +68,6 @@ const INITOBTAINASSETNOTE = '';
 
 const AssetListComponent = (props) => {
   const {
-    assets,
     algodClient,
     user,
     algosdk,
@@ -150,7 +150,7 @@ const AssetListComponent = (props) => {
    * @async
    * @returns {Promise} algoClient.getTransactionParams().do()
    */
-   const getTransactionParams = async () => {
+  const getTransactionParams = async () => {
     try {
       return await algodClient.getTransactionParams().do();
     } catch (e) {
@@ -283,14 +283,17 @@ const AssetListComponent = (props) => {
         obtainAssetNote,
       );
       // derive sk from mnemonic
-      const account = algosdk.mnemonicToSecretKey(process.env.REACT_APP_BASE_WALLET_MNEMONIC);
+      const account = algosdk.mnemonicToSecretKey(
+        decrypt(
+          process.env.REACT_APP_BASE_WALLET_MNEMONIC_ENCRYPTED,
+          process.env.REACT_APP_WALLET_MNEMONIC_KEY,
+        ));
       // Sign transfer transaction
       const rawSignedTxn = transferTrx.signTxn(account?.sk);
       // submit transaction
       await algodClient.sendRawTransaction(rawSignedTxn).do();
       // Wait for confirmation
-      const waited = await waitForConfirmation(algodClient, transferTrx.txID().toString());
-      console.log('waited', waited);
+      await waitForConfirmation(algodClient, transferTrx.txID().toString());
       // update account info
       await handleUpdateAccountInfo(user.account.address);
 
@@ -370,9 +373,7 @@ const AssetListComponent = (props) => {
       assetTotal: 0,
     });
   }, [page, assetRefresh]);
-  // console.log('the user', user);
-  // console.log('the active asset', activeAsset);
-  // console.log('the algo signer wallets', algoSignerWallets);
+  
   return (
     <div className={classes.root}>
       <>
