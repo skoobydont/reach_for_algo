@@ -466,24 +466,29 @@ const AssetListComponent = (props) => {
                     </tr>
                   </tbody>
                 </table>
-                <Typography>Amount</Typography>
-                <TextField
-                  type="number"
-                  onChange={(e) => handleObtainAssetAmountChange(e)}
-                  value={obtainAssetAmount}
-                />
-                <TextField
-                  placeholder='Note (optional)'
-                  onChange={handleObtainAssetNoteChange}
-                />
-                <Button
-                  disabled={obtainAssetAmount <= 0}
-                  onClick={handleTransferTransaction}
-                  variant="contained"
-                  color="primary"
-                >
-                  Confirm
-                </Button>
+                {+userAssetTotals?.assetAvailable > 0
+                  ? (
+                    <>
+                      <Typography>Amount</Typography>
+                      <TextField
+                        type="number"
+                        onChange={(e) => handleObtainAssetAmountChange(e)}
+                        value={obtainAssetAmount}
+                      />
+                      <TextField
+                        placeholder='Note (optional)'
+                        onChange={handleObtainAssetNoteChange}
+                      />
+                      <Button
+                        disabled={obtainAssetAmount <= 0}
+                        onClick={handleTransferTransaction}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Confirm
+                      </Button>                    
+                    </>
+                  ) : <Typography>Asset Currently Unavailable</Typography>}
               </div>
             </Collapse>
             <Collapse
