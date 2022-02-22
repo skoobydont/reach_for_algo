@@ -29,6 +29,8 @@ const LandingPage = (props) => {
     handleSetAccount,
     ledger,
     indexerClient,
+    setOpenSnackbar,
+    setSnackbarMessage,
   } = props;
   const assets = useRef();
   const [assetIdList] = useState(user?.account?.assets?.map((a) => a['asset-id']));

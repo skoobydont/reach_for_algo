@@ -19,6 +19,8 @@ import ProfilePage from './pages/ProfilePage';
 import MainTheme from './components/Theme';
 import Nav from './components/NavComponent';
 import Footer from './components/FooterComponent';
+import SnackbarComponent from './components/SnackbarComponent';
+// Util
 import {
   getAlgoServer,
   getIndexerServer,
@@ -112,6 +114,9 @@ const App = () => {
   const handleSelectLedgerChange = (e) => {
     setLedger(e.target.value);
   };
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   
   return (
     <MainTheme>
@@ -124,6 +129,14 @@ const App = () => {
           handleSetAccount={handleSetAccount}
           algodClient={algodClient}
           indexerClient={indexerClient}
+        />
+        {/**
+         * TODO: incorporate error handling with Nav component along with pages
+         */}
+        <SnackbarComponent
+          open={openSnackbar}
+          setOpen={setOpenSnackbar}
+          message={snackbarMessage}
         />
         {account !== null && account !== undefined
           ? (
@@ -161,6 +174,8 @@ const App = () => {
                         ledger={ledger}
                         setLedger={setLedger}
                         indexerClient={indexerClient}
+                        setOpenSnackbar={setOpenSnackbar}
+                        setSnackbarMessage={setSnackbarMessage}
                       />
                     )}
                   />
